@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spicy Wings - Dark Kitchen & Pedidos</title>
+    <meta name="description" content="Pide las mejores alitas estilo Dark Kitchen para recoger en nuestras 3 sucursales.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components/menu.css">
+    <link rel="stylesheet" href="css/components/cart.css">
+    <link rel="stylesheet" href="css/components/modal.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header" id="main-header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-accent">SPICY</span>WINGS <small style="font-size: 11px; opacity: 0.5; font-weight: normal; vertical-align: super;">v3.0</small>
+            </div>
+            <div class="branch-selector-indicator" id="active-branch-indicator">
+                📍 Seleccionar Sucursal
+            </div>
+            <button class="cart-toggle-btn" id="cart-toggle-btn" aria-label="Ver carrito">
+                🛒 <span class="cart-badge" id="cart-badge">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="menu-container">
+        <section class="hero">
+            <h1>DARK KITCHEN WINGS</h1>
+            <p>Alitas premium listas para recoger en tu sucursal más cercana. Calientes, crujientes y con la salsa perfecta.</p>
+        </section>
+
+        <!-- Menu Categories and Products will be populated here -->
+        <section class="menu-section" id="menu-section">
+            <div class="category-block">
+                <h2 class="category-title">🍗 ALITAS CRUJIENTES</h2>
+                <div class="products-grid">
+                    <!-- Alitas 10 pcs -->
+                    <div class="product-card" data-id="alitas-10" data-name="Alitas (10 piezas)" data-price="130.00">
+                        <div class="product-img-wrapper">
+                            <div class="product-badge">Top Ventas</div>
+                            <div class="product-img-placeholder">🔥 10 PZS</div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Alitas (10 piezas)</h3>
+                            <p class="product-desc">Alitas fritas al momento con el nivel de crujencia perfecto.</p>
+                            
+                            <div class="customization-wrapper">
+                                <label>Elige Salsa:</label>
+                                <select class="sauce-select">
+                                    <option value="Mango Habanero">Mango Habanero 🌶️🌶️</option>
+                                    <option value="Buffalo">Buffalo 🌶️</option>
+                                    <option value="BBQ Dulce">BBQ Dulce</option>
+                                    <option value="Lemon Pepper">Lemon Pepper</option>
+                                </select>
+                            </div>
+                            
+                            <div class="product-footer">
+                                <span class="price">$130.00 MXN</span>
+                                <button class="add-to-cart-btn">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alitas 20 pcs -->
+                    <div class="product-card" data-id="alitas-20" data-name="Alitas (20 piezas)" data-price="240.00">
+                        <div class="product-img-wrapper">
+                            <div class="product-img-placeholder">🔥🔥 20 PZS</div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Alitas (20 piezas)</h3>
+                            <p class="product-desc">Doble ración para compartir con salsas a tu elección.</p>
+                            
+                            <div class="customization-wrapper">
+                                <label>Elige Salsa:</label>
+                                <select class="sauce-select">
+                                    <option value="Buffalo">Buffalo 🌶️</option>
+                                    <option value="Mango Habanero">Mango Habanero 🌶️🌶️</option>
+                                    <option value="BBQ Dulce">BBQ Dulce</option>
+                                    <option value="Lemon Pepper">Lemon Pepper</option>
+                                </select>
+                            </div>
+                            
+                            <div class="product-footer">
+                                <span class="price">$240.00 MXN</span>
+                                <button class="add-to-cart-btn">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-block" style="margin-top: var(--spacing-xl);">
+                <h2 class="category-title">🍟 GUARNICIONES Y BEBIDAS</h2>
+                <div class="products-grid">
+                    <!-- Papas -->
+                    <div class="product-card" data-id="papas-gajo" data-name="Papas Gajo Sazonadas" data-price="60.00">
+                        <div class="product-img-wrapper">
+                            <div class="product-img-placeholder">🥔 PAPAS</div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Papas Gajo Sazonadas</h3>
+                            <p class="product-desc">Papas gajo crujientes con nuestro sazonador especial.</p>
+                            <div class="product-footer">
+                                <span class="price">$60.00 MXN</span>
+                                <button class="add-to-cart-btn">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bebida -->
+                    <div class="product-card" data-id="refresco-cola" data-name="Refresco Cola" data-price="25.00">
+                        <div class="product-img-wrapper">
+                            <div class="product-img-placeholder">🥤 BEBIDA</div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Refresco Cola</h3>
+                            <p class="product-desc">Lata de 355ml fría.</p>
+                            <div class="product-footer">
+                                <span class="price">$25.00 MXN</span>
+                                <button class="add-to-cart-btn">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Sliding Cart -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Tu Pedido</h2>
+            <button class="cart-close-btn" id="cart-close-btn">&times;</button>
+        </div>
+        
+        <div class="cart-items-container" id="cart-items-container">
+            <!-- Populated by JS -->
+            <div class="cart-empty-message">Tu carrito está vacío 🍗</div>
+        </div>
+        
+        <div class="cart-footer">
+            <div class="cart-total-row">
+                <span>Total:</span>
+                <span class="cart-total-price" id="cart-total-price">$0.00 MXN</span>
+            </div>
+            <button class="checkout-btn" id="checkout-btn" disabled>Continuar Pedido</button>
+        </div>
+    </div>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Branch Selection Modal -->
+    <div class="modal" id="branch-modal">
+        <div class="modal-content">
+            <h2>📍 SELECCIONA TU SUCURSAL</h2>
+            <p>Para garantizar los tiempos de preparación y darte la mejor atención, elige tu sucursal más cercana:</p>
+            <div class="branch-options">
+                <button class="branch-option-btn" data-branch="centro">
+                    <strong>Sucursal Centro</strong>
+                    <span>Av. Juárez #105, Col. Centro</span>
+                </button>
+                <button class="branch-option-btn" data-branch="norte">
+                    <strong>Sucursal Norte</strong>
+                    <span>Blvd. Bernardo Quintana #450</span>
+                </button>
+                <button class="branch-option-btn" data-branch="sur">
+                    <strong>Sucursal Sur</strong>
+                    <span>Av. Constituyentes #209</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Details Modal -->
+    <div class="modal" id="checkout-modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" id="checkout-close-btn">&times;</button>
+            <h2>📋 CONFIRMA TU PEDIDO</h2>
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label for="customer-name">Tu Nombre:</label>
+                    <input type="text" id="customer-name" required placeholder="Ej. Juan Pérez">
+                </div>
+                
+                <div class="form-group">
+                    <label>Método de Entrega:</label>
+                    <div class="delivery-methods">
+                        <label class="radio-label">
+                            <input type="radio" name="delivery-method" value="recoger" checked>
+                            <span>Recoger en Sucursal</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="delivery-method" value="domicilio">
+                            <span>Envío a Domicilio</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="address-group" style="display: none;">
+                    <label for="customer-address">Dirección de Entrega:</label>
+                    <input type="text" id="customer-address" placeholder="Calle, Número, Colonia">
+                </div>
+
+                <div class="form-group">
+                    <label for="customer-notes">Notas / Instrucciones adicionales:</label>
+                    <textarea id="customer-notes" placeholder="Ej. Aderezo extra, sin chile, etc."></textarea>
+                </div>
+
+                <div class="modal-info-box" id="modal-branch-info">
+                    Sucursal de recogida: <strong id="modal-active-branch-name">-</strong>
+                </div>
+
+                <button type="submit" class="submit-order-btn">Enviar a WhatsApp 🍗</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- BRANCHES LOGIC ---
+        const branches = {
+            centro: {
+                name: "Sucursal Centro",
+                phone: "523317037056",
+                address: "Av. Ju\u00E1rez #105, Col. Centro"
+            },
+            norte: {
+                name: "Sucursal Norte",
+                phone: "523317037056",
+                address: "Blvd. Bernardo Quintana #450"
+            },
+            sur: {
+                name: "Sucursal Sur",
+                phone: "523317037056",
+                address: "Av. Constituyentes #209"
+            }
+        };
+
+        const BRANCH_KEY = "spicywings_active_branch";
+
+        function getActiveBranchKey() {
+            return localStorage.getItem(BRANCH_KEY);
+        }
+
+        function getActiveBranch() {
+            const key = getActiveBranchKey();
+            return key ? branches[key] : null;
+        }
+
+        function setActiveBranch(branchKey) {
+            if (branches[branchKey]) {
+                localStorage.setItem(BRANCH_KEY, branchKey);
+                updateBranchIndicatorUI(branchKey);
+                return true;
+            }
+            return false;
+        }
+
+        function updateBranchIndicatorUI(branchKey) {
+            const indicator = document.getElementById("active-branch-indicator");
+            const modalBranchName = document.getElementById("modal-active-branch-name");
+            const branch = branches[branchKey];
+            
+            if (branch) {
+                if (indicator) {
+                    indicator.textContent = `\uD83D\uDCCD ${branch.name}`;
+                }
+                if (modalBranchName) {
+                    modalBranchName.textContent = `${branch.name} (${branch.address})`;
+                }
+            }
+        }
+
+        // --- CART LOGIC ---
+        let cart = [];
+
+        function getCart() {
+            return cart;
+        }
+
+        function addToCart(id, name, price, option = "") {
+            const existingItem = cart.find(item => item.id === id && item.option === option);
+            
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ id, name, price: parseFloat(price), qty: 1, option });
+            }
+            
+            updateCartUI();
+        }
+
+        function changeQty(id, option, delta) {
+            const idx = cart.findIndex(item => item.id === id && item.option === option);
+            if (idx !== -1) {
+                cart[idx].qty += delta;
+                if (cart[idx].qty <= 0) {
+                    cart.splice(idx, 1);
+                }
+                updateCartUI();
+            }
+        }
+
+        function getCartTotal() {
+            return cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        }
+
+        function getCartCount() {
+            return cart.reduce((sum, item) => sum + item.qty, 0);
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById("cart-items-container");
+            const badge = document.getElementById("cart-badge");
+            const totalPriceEl = document.getElementById("cart-total-price");
+            const checkoutBtn = document.getElementById("checkout-btn");
+            
+            if (!container) return;
+            
+            const totalCount = getCartCount();
+            if (badge) badge.textContent = totalCount;
+            
+            if (checkoutBtn) {
+                checkoutBtn.disabled = totalCount === 0;
+            }
+            
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="cart-empty-message">Tu carrito est\u00E1 vac\u00EDo \uD83C\uDF57</div>`;
+                if (totalPriceEl) totalPriceEl.textContent = "$0.00 MXN";
+                return;
+            }
+            
+            container.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div class="cart-item-details">
+                        <h4>${item.name}</h4>
+                        ${item.option ? `<p class="cart-item-option">Salsa: ${item.option}</p>` : ""}
+                        <span class="cart-item-price">$${(item.price * item.qty).toFixed(2)} MXN</span>
+                    </div>
+                    <div class="cart-item-quantity-controls">
+                        <button class="qty-btn" data-id="${item.id}" data-option="${item.option}" data-action="dec">-</button>
+                        <span class="qty-val">${item.qty}</span>
+                        <button class="qty-btn" data-id="${item.id}" data-option="${item.option}" data-action="inc">+</button>
+                    </div>
+                </div>
+            `).join("");
+            
+            container.querySelectorAll(".qty-btn").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = btn.getAttribute("data-id");
+                    const option = btn.getAttribute("data-option");
+                    const action = btn.getAttribute("data-action");
+                    const delta = action === "inc" ? 1 : -1;
+                    changeQty(id, option, delta);
+                });
+            });
+            
+            if (totalPriceEl) {
+                totalPriceEl.textContent = `$${getCartTotal().toFixed(2)} MXN`;
+            }
+        }
+
+        // --- WHATSAPP REDIRECTION LOGIC ---
+        function sendOrderToWhatsApp(customerName, method, address, notes) {
+            if (address === undefined) address = "";
+            if (notes === undefined) notes = "";
+
+            var activeBranch = getActiveBranch();
+            if (!activeBranch) {
+                alert("Por favor, selecciona una sucursal primero.");
+                return;
+            }
+
+            var currentCart = getCart();
+            var total = getCartTotal();
+
+            // Build message using String.fromCodePoint for emoji compatibility
+            // This builds proper Unicode strings that encodeURIComponent handles as %F0%9F... (4-byte UTF-8)
+            var chicken = String.fromCodePoint(0x1F357);  // 🍗
+            var person  = String.fromCodePoint(0x1F464);  // 👤
+            var pin     = String.fromCodePoint(0x1F4CD);  // 📍
+            var house   = String.fromCodePoint(0x1F3E0);  // 🏠
+            var notepad = String.fromCodePoint(0x1F4CB);  // 📋
+            var money   = String.fromCodePoint(0x1F4B0);  // 💰
+            var bubble  = String.fromCodePoint(0x1F4AC);  // 💬
+
+            var msg = chicken + " *\u00A1NUEVO PEDIDO - SPICY WINGS!* " + chicken + "\n";
+            msg += "--------------------------------------\n";
+            msg += person + " *Cliente:* " + customerName + "\n";
+            msg += pin + " *M\u00E9todo:* " + (method === "recoger" ? "Para Recoger (" + activeBranch.name + ")" : "Env\u00EDo a Domicilio") + "\n";
+            if (method === "domicilio" && address) {
+                msg += house + " *Direcci\u00F3n:* " + address + "\n";
+            }
+            msg += "\n" + notepad + " *Detalle del Pedido:*\n";
+
+            currentCart.forEach(function(item) {
+                var sauceText = item.option ? " (Salsa: " + item.option + ")" : "";
+                msg += "\u2022 " + item.qty + "x " + item.name + sauceText + " - $" + (item.price * item.qty).toFixed(2) + " MXN\n";
+            });
+
+            msg += "\n" + money + " *Total a Pagar:* $" + total.toFixed(2) + " MXN\n";
+            msg += "--------------------------------------\n";
+            if (notes) {
+                msg += bubble + " *Notas:* " + notes + "\n";
+            }
+            msg += "\n\u00A1Espero su confirmaci\u00F3n!";
+
+            // Abrir app móvil de WhatsApp directamente usando protocolo nativo
+            var encodedMsg = encodeURIComponent(msg);
+            window.location.href = "whatsapp://send?phone=" + activeBranch.phone + "&text=" + encodedMsg;
+        }
+
+        // --- GLOBAL EVENT COORDINATION ---
+        document.addEventListener("DOMContentLoaded", () => {
+            // Elements
+            const branchModal = document.getElementById("branch-modal");
+            const checkoutModal = document.getElementById("checkout-modal");
+            const checkoutCloseBtn = document.getElementById("checkout-close-btn");
+            const activeBranchIndicator = document.getElementById("active-branch-indicator");
+            
+            const cartSidebar = document.getElementById("cart-sidebar");
+            const cartToggleBtn = document.getElementById("cart-toggle-btn");
+            const cartCloseBtn = document.getElementById("cart-close-btn");
+            const sidebarOverlay = document.getElementById("sidebar-overlay");
+            
+            const checkoutBtn = document.getElementById("checkout-btn");
+            const checkoutForm = document.getElementById("checkout-form");
+            const deliveryMethodRadios = document.getElementsByName("delivery-method");
+            const addressGroup = document.getElementById("address-group");
+            const customerAddress = document.getElementById("customer-address");
+
+            // Check for active branch in localStorage
+            const savedBranch = getActiveBranchKey();
+            if (!savedBranch) {
+                // Set Centro as the default branch on first load
+                setActiveBranch("centro");
+            } else {
+                setActiveBranch(savedBranch);
+            }
+
+            // Branch selection action
+            document.querySelectorAll(".branch-option-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const selectedBranch = btn.getAttribute("data-branch");
+                    setActiveBranch(selectedBranch);
+                    branchModal.classList.remove("open");
+                });
+            });
+
+            // Show/Hide active branch indicator triggers modal
+            activeBranchIndicator.addEventListener("click", () => {
+                branchModal.classList.add("open");
+            });
+
+            // Cart sidebar toggle controls
+            const openCart = () => {
+                cartSidebar.classList.add("open");
+                sidebarOverlay.classList.add("active");
+            };
+            
+            const closeCart = () => {
+                cartSidebar.classList.remove("open");
+                sidebarOverlay.classList.remove("active");
+            };
+
+            cartToggleBtn.addEventListener("click", openCart);
+            cartCloseBtn.addEventListener("click", closeCart);
+            sidebarOverlay.addEventListener("click", closeCart);
+
+            // Add products to cart action
+            document.querySelectorAll(".product-card").forEach(card => {
+                const addBtn = card.querySelector(".add-to-cart-btn");
+                if (!addBtn) return;
+                
+                addBtn.addEventListener("click", () => {
+                    const id = card.getAttribute("data-id");
+                    const name = card.getAttribute("data-name");
+                    const price = card.getAttribute("data-price");
+                    
+                    // Extract sauce option if present
+                    const sauceSelect = card.querySelector(".sauce-select");
+                    const option = sauceSelect ? sauceSelect.value : "";
+                    
+                    addToCart(id, name, price, option);
+                    openCart();
+                });
+            });
+
+            // Checkout form interactions
+            checkoutBtn.addEventListener("click", () => {
+                closeCart();
+                checkoutModal.classList.add("open");
+            });
+
+            checkoutCloseBtn.addEventListener("click", () => {
+                checkoutModal.classList.remove("open");
+            });
+
+            // Delivery details display switch
+            deliveryMethodRadios.forEach(radio => {
+                radio.addEventListener("change", (e) => {
+                    if (e.target.value === "domicilio") {
+                        addressGroup.style.display = "block";
+                        customerAddress.required = true;
+                    } else {
+                        addressGroup.style.display = "none";
+                        customerAddress.required = false;
+                        customerAddress.value = "";
+                    }
+                });
+            });
+
+            // Submit form
+            checkoutForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const name = document.getElementById("customer-name").value;
+                const method = document.querySelector('input[name="delivery-method"]:checked').value;
+                const address = customerAddress.value;
+                const notes = document.getElementById("customer-notes").value;
+
+                sendOrderToWhatsApp(name, method, address, notes);
+                checkoutModal.classList.remove("open");
+            });
+
+            // Trigger initial UI rendering empty cart
+            updateCartUI();
+        });
+    </script>
+</body>
+</html>

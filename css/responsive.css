@@ -1,0 +1,22 @@
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 32px;
+    }
+    
+    .hero p {
+        font-size: 14px;
+    }
+    
+    .cart-sidebar {
+        max-width: 100%;
+        right: -100%;
+    }
+    
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        padding: var(--spacing-lg);
+    }
+}
