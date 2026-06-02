@@ -432,9 +432,11 @@
             }
             msg += "\n\u00A1Espero su confirmaci\u00F3n!";
 
-            // Abrir app móvil de WhatsApp directamente usando protocolo nativo
+            // Redirección híbrida: app nativa en móvil, enlace web en escritorio
+            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            var baseWhatsAppUrl = isMobile ? "whatsapp://send" : "https://api.whatsapp.com/send";
             var encodedMsg = encodeURIComponent(msg);
-            window.location.href = "whatsapp://send?phone=" + activeBranch.phone + "&text=" + encodedMsg;
+            window.location.href = baseWhatsAppUrl + "?phone=" + activeBranch.phone + "&text=" + encodedMsg;
         }
 
         // --- GLOBAL EVENT COORDINATION ---
@@ -668,9 +670,11 @@
                             }
                             msg += "\n¡Espero su confirmación de preparación!";
 
-                            // Abrir app móvil de WhatsApp directamente usando protocolo nativo
+                            // Redirección híbrida: app nativa en móvil, enlace web en escritorio
+                            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                            var baseWhatsAppUrl = isMobile ? "whatsapp://send" : "https://api.whatsapp.com/send";
                             var encodedMsg = encodeURIComponent(msg);
-                            window.location.href = "whatsapp://send?phone=" + activeBranch.phone + "&text=" + encodedMsg;
+                            window.location.href = baseWhatsAppUrl + "?phone=" + activeBranch.phone + "&text=" + encodedMsg;
                         };
 
                         // Lanzar confirmación
