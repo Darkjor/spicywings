@@ -601,6 +601,105 @@
                 }
             });
 
+            // --- STRIPE CALLBACK HANDLING ---
+            const checkStripeCallback = () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const isSuccess = urlParams.get('success') === 'true';
+                const isCancel = urlParams.get('cancel') === 'true';
+                const sessionId = urlParams.get('session_id');
+
+                if (isSuccess && sessionId) {
+                    // Recuperar orden pendiente de localStorage
+                    const savedOrderStr = localStorage.getItem('spicywings_pending_checkout');
+                    const savedCartStr = localStorage.getItem('spicywings_pending_cart');
+
+                    if (savedOrderStr && savedCartStr) {
+                        const savedOrder = JSON.parse(savedOrderStr);
+                        const savedCart = JSON.parse(savedCartStr);
+
+                        // Restaurar carrito temporalmente para ejecutar la función de WhatsApp
+                        cart = savedCart;
+                        
+                        // Modificar temporalmente sendOrderToWhatsApp para incluir confirmación de Stripe
+                        const originalSendOrder = sendOrderToWhatsApp;
+                        sendOrderToWhatsApp = (customerName, method, address, notes) => {
+                            if (address === undefined) address = "";
+                            if (notes === undefined) notes = "";
+
+                            var activeBranch = getActiveBranch();
+                            if (!activeBranch) {
+                                alert("Por favor, selecciona una sucursal primero.");
+                                return;
+                            }
+
+                            var total = getCartTotal();
+
+                            var chicken = String.fromCodePoint(0x1F357);  // 🍗
+                            var person  = String.fromCodePoint(0x1F464);  // 👤
+                            var pin     = String.fromCodePoint(0x1F4CD);  // 📍
+                            var house   = String.fromCodePoint(0x1F3E0);  // 🏠
+                            var notepad = String.fromCodePoint(0x1F4CB);  // 📋
+                            var money   = String.fromCodePoint(0x1F4B0);  // 💰
+                            var bubble  = String.fromCodePoint(0x1F4AC);  // 💬
+                            var shield  = String.fromCodePoint(0x1F6E1);  // 🛡️
+
+                            var msg = chicken + " *\u00A1NUEVO PEDIDO - SPICY WINGS!* " + chicken + "\n";
+                            msg += "--------------------------------------\n";
+                            msg += shield + " *Estado:* PAGO CONFIRMADO VÍA STRIPE 💳\n";
+                            msg += "ID Transacción: " + sessionId.substring(0, 15) + "...\n";
+                            msg += "--------------------------------------\n";
+                            msg += person + " *Cliente:* " + customerName + "\n";
+                            msg += pin + " *Método:* " + (method === "recoger" ? "Para Recoger (" + activeBranch.name + ")" : "Envío a Domicilio") + "\n";
+                            if (method === "domicilio" && address) {
+                                msg += house + " *Dirección:* " + address + "\n";
+                            }
+                            msg += "\n" + notepad + " *Detalle del Pedido:*\n";
+
+                            cart.forEach(function(item) {
+                                var sauceText = item.option ? " (Salsa: " + item.option + ")" : "";
+                                msg += "\u2022 " + item.qty + "x " + item.name + sauceText + " - $" + (item.price * item.qty).toFixed(2) + " MXN\n";
+                            });
+
+                            msg += "\n" + money + " *Total Pagado:* $" + total.toFixed(2) + " MXN\n";
+                            msg += "--------------------------------------\n";
+                            if (notes) {
+                                msg += bubble + " *Notas:* " + notes + "\n";
+                            }
+                            msg += "\n¡Espero su confirmación de preparación!";
+
+                            var encodedMsg = encodeURIComponent(msg);
+                            window.location.href = "whatsapp://send?phone=" + activeBranch.phone + "&text=" + encodedMsg;
+                        };
+
+                        // Lanzar confirmación
+                        alert("¡Pago con Stripe realizado con éxito! Redirigiendo a WhatsApp para confirmar los detalles de entrega...");
+                        sendOrderToWhatsApp(savedOrder.name, savedOrder.method, savedOrder.address, savedOrder.notes);
+
+                        // Restaurar función original
+                        sendOrderToWhatsApp = originalSendOrder;
+
+                        // Limpiar todo
+                        localStorage.removeItem('spicywings_pending_checkout');
+                        localStorage.removeItem('spicywings_pending_cart');
+                        cart = [];
+                        updateCartUI();
+                    } else {
+                        alert("Pago de Stripe recibido, pero no se encontraron los detalles de la orden en el navegador local.");
+                    }
+                    
+                    // Limpiar parámetros de la URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+
+                if (isCancel) {
+                    alert("El proceso de pago con Stripe fue cancelado o rechazado. Tu carrito sigue guardado por si deseas intentar de nuevo.");
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            };
+
+            // Ejecutar revisión de Stripe
+            checkStripeCallback();
+
             // Trigger initial UI rendering empty cart
             updateCartUI();
         });
