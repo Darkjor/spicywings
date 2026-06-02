@@ -216,6 +216,20 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Método de Pago:</label>
+                    <div class="delivery-methods" style="display: flex; gap: 15px; margin-top: 5px;">
+                        <label class="radio-label" style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="radio" name="payment-method" value="stripe" checked>
+                            <span>💳 Tarjeta (Stripe)</span>
+                        </label>
+                        <label class="radio-label" style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="radio" name="payment-method" value="efectivo">
+                            <span>💵 Efectivo al recibir</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="customer-notes">Notas / Instrucciones adicionales:</label>
                     <textarea id="customer-notes" placeholder="Ej. Aderezo extra, sin chile, etc."></textarea>
                 </div>
@@ -224,7 +238,7 @@
                     Sucursal de recogida: <strong id="modal-active-branch-name">-</strong>
                 </div>
 
-                <button type="submit" class="submit-order-btn">Enviar a WhatsApp 🍗</button>
+                <button type="submit" class="submit-order-btn" id="submit-order-btn">Pagar con Stripe 💳</button>
             </form>
         </div>
     </div>
@@ -519,6 +533,19 @@
                         addressGroup.style.display = "none";
                         customerAddress.required = false;
                         customerAddress.value = "";
+                    }
+                });
+            
+            // Cambiar texto del botón según método de pago
+            const paymentMethodRadios = document.getElementsByName("payment-method");
+            const submitOrderBtn = document.getElementById("submit-order-btn");
+            
+            paymentMethodRadios.forEach(radio => {
+                radio.addEventListener("change", (e) => {
+                    if (e.target.value === "stripe") {
+                        submitOrderBtn.textContent = "Pagar con Stripe 💳";
+                    } else {
+                        submitOrderBtn.textContent = "Confirmar y Enviar a WhatsApp 🍗";
                     }
                 });
             });
