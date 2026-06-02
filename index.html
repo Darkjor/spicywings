@@ -551,15 +551,54 @@
             });
 
             // Submit form
-            checkoutForm.addEventListener("submit", (e) => {
+            checkoutForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
                 const name = document.getElementById("customer-name").value;
                 const method = document.querySelector('input[name="delivery-method"]:checked').value;
                 const address = customerAddress.value;
                 const notes = document.getElementById("customer-notes").value;
+                const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
 
-                sendOrderToWhatsApp(name, method, address, notes);
-                checkoutModal.classList.remove("open");
+                if (paymentMethod === "efectivo") {
+                    sendOrderToWhatsApp(name, method, address, notes);
+                    checkoutModal.classList.remove("open");
+                } else {
+                    // Flujo Stripe
+                    submitOrderBtn.disabled = true;
+                    submitOrderBtn.textContent = "Procesando...";
+
+                    // Guardar detalles del pedido en localStorage
+                    const orderDetails = { name, method, address, notes, timestamp: Date.now() };
+                    localStorage.setItem('spicywings_pending_checkout', JSON.stringify(orderDetails));
+                    localStorage.setItem('spicywings_pending_cart', JSON.stringify(getCart()));
+
+                    try {
+                        const response = await fetch('/api/create-checkout-session', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ items: getCart() })
+                        });
+
+                        if (!response.ok) {
+                            const errData = await response.json();
+                            throw new Error(errData.error || 'Error al conectar con el servidor');
+                        }
+
+                        const data = await response.json();
+                        if (data.url) {
+                            // Redirigir a Stripe Checkout
+                            window.location.href = data.url;
+                        } else {
+                            throw new Error('No se recibió la URL de pago');
+                        }
+                    } catch (error) {
+                        alert('Error al iniciar el pago con Stripe: ' + error.message);
+                        submitOrderBtn.disabled = false;
+                        submitOrderBtn.textContent = "Pagar con Stripe 💳";
+                    }
+                }
             });
 
             // Trigger initial UI rendering empty cart
