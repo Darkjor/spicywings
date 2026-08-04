@@ -37,6 +37,13 @@ const apiLimiter = rateLimit({
 app.use(cors());
 app.use(express.json());
 
+// Prueba final de producción del punto de venta en tablet: la raíz del sitio
+// sirve temporalmente /point-demo en vez del flujo de pedidos por WhatsApp.
+// El sitio de WhatsApp sigue intacto y accesible directo en /index.html.
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'point-demo.html'));
+});
+
 // Servir archivos estáticos del frontend desde la raíz del proyecto con cabecera UTF-8 forzada
 app.use(express.static(__dirname, {
   setHeaders: (res, filePath) => {

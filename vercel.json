@@ -40,6 +40,10 @@
       "dest": "/point-demo.html"
     },
     {
+      "src": "/",
+      "dest": "/point-demo.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }

@@ -2,6 +2,7 @@
     let cart = [];
     let currentOrderId = null;
     let pollTimer = null;
+    let simulateAvailable = true;
 
     const menuEl = document.getElementById('point-menu');
     const orderItemsEl = document.getElementById('order-items');
@@ -19,7 +20,7 @@
     const newOrderBtn = document.getElementById('new-order-btn');
     const modeNotice = document.getElementById('mode-notice');
 
-    modeNotice.textContent = 'Modo demo: si el servidor no tiene configuradas credenciales reales de Mercado Pago (MP_ACCESS_TOKEN / MP_TERMINAL_ID de prueba), el cobro se simula automáticamente para poder ver el flujo completo sin terminal física.';
+    modeNotice.textContent = 'Punto de venta Spicy Wings: al pagar, el cobro se envía directo a la terminal Mercado Pago Point en sucursal.';
 
     function getCartTotal() {
         return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -131,7 +132,7 @@
 
         const isFinal = ['processed', 'failed', 'canceled', 'refunded'].includes(status);
         statusPulse.style.display = isFinal ? 'none' : 'block';
-        simulateBox.style.display = isFinal ? 'none' : 'block';
+        simulateBox.style.display = (isFinal || !simulateAvailable) ? 'none' : 'block';
         newOrderBtn.style.display = isFinal ? 'block' : 'none';
 
         const config = {
@@ -160,6 +161,7 @@
             const res = await fetch(`/api/point/orders/${currentOrderId}`);
             if (!res.ok) return;
             const data = await res.json();
+            simulateAvailable = Boolean(data.simulate_available);
             setStatusView(data.status);
         } catch (error) {
             // Reintenta en el siguiente tick
@@ -187,6 +189,7 @@
             if (!res.ok) throw new Error(data.error || 'No se pudo crear el cobro');
 
             currentOrderId = data.id;
+            simulateAvailable = Boolean(data.simulate_available);
             buildView.style.display = 'none';
             statusView.style.display = 'block';
             setStatusView(data.status);
