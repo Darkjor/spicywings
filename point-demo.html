@@ -74,6 +74,13 @@
                         <button class="point-simulate-btn" id="simulate-btn">✅ Simular pago exitoso</button>
                     </div>
 
+                    <!-- TEMPORAL — quitar después de probar el QR. No confirma ningún
+                         cobro real ni toca Mercado Pago, solo fuerza la pantalla local. -->
+                    <div class="point-simulate-box" id="manual-confirm-box" style="display: none; border-color: #ffb300;">
+                        <div class="point-simulate-label" style="color: #ffb300;">⚠️ SOLO PRUEBA — no confirma un cobro real</div>
+                        <button class="point-simulate-btn" id="manual-confirm-btn" style="border-color: #ffb300; color: #ffb300;">Confirmar pago manualmente (prueba)</button>
+                    </div>
+
                     <div class="point-receipt-box" id="receipt-box" style="display: none;">
                         <div id="receipt-qr" class="point-receipt-qr"></div>
                         <div class="point-receipt-label">Escanea para ver tu ticket</div>

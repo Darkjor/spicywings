@@ -17,6 +17,8 @@
     const statusSub = document.getElementById('status-sub');
     const simulateBox = document.getElementById('simulate-box');
     const simulateBtn = document.getElementById('simulate-btn');
+    const manualConfirmBox = document.getElementById('manual-confirm-box');
+    const manualConfirmBtn = document.getElementById('manual-confirm-btn');
     const newOrderBtn = document.getElementById('new-order-btn');
     const modeNotice = document.getElementById('mode-notice');
     const receiptBox = document.getElementById('receipt-box');
@@ -147,6 +149,8 @@
         const isFinal = ['processed', 'failed', 'canceled', 'refunded'].includes(status);
         statusPulse.style.display = isFinal ? 'none' : 'block';
         simulateBox.style.display = (isFinal || !simulateAvailable) ? 'none' : 'block';
+        // TEMPORAL — quitar junto con el botón después de probar el QR.
+        manualConfirmBox.style.display = (isFinal || simulateAvailable) ? 'none' : 'block';
         newOrderBtn.style.display = isFinal ? 'block' : 'none';
 
         if (status === 'processed') {
@@ -243,6 +247,17 @@
             simulateBtn.disabled = false;
             simulateBtn.textContent = '✅ Simular pago exitoso';
         }
+    });
+
+    // TEMPORAL — quitar este bloque completo después de probar el QR.
+    // No llama a Mercado Pago ni al backend: solo fuerza la pantalla local
+    // a "procesado" para poder ver el QR sin esperar/generar un cobro real.
+    manualConfirmBtn.addEventListener('click', () => {
+        if (pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = null;
+        }
+        setStatusView('processed');
     });
 
     newOrderBtn.addEventListener('click', () => {
