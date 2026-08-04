@@ -52,6 +52,16 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date() });
 });
 
+// --- Módulo de cobro en tablet vía Mercado Pago Point (demo, aditivo) ---
+// No toca ni depende del flujo de pedidos por WhatsApp / Stripe.
+const pointRoutes = require('./routes/point');
+const mercadopagoWebhooks = require('./routes/webhooks');
+app.use('/api/point', pointRoutes);
+app.use('/webhooks', mercadopagoWebhooks);
+app.get('/point-demo', (req, res) => {
+  res.sendFile(path.join(__dirname, 'point-demo.html'));
+});
+
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Aplicar el limitador solo a la creación de sesiones de pago

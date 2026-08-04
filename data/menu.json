@@ -1,0 +1,42 @@
+{
+  "categories": [
+    {
+      "title": "🍗 Alitas Crujientes",
+      "items": [
+        {
+          "id": "alitas-10",
+          "name": "Alitas (10 piezas)",
+          "description": "Alitas fritas al momento con el nivel de crujencia perfecto.",
+          "price": 130.00,
+          "sauces": ["Mango Habanero", "Buffalo", "BBQ Dulce", "Lemon Pepper"]
+        },
+        {
+          "id": "alitas-20",
+          "name": "Alitas (20 piezas)",
+          "description": "Doble ración para compartir con salsas a tu elección.",
+          "price": 240.00,
+          "sauces": ["Buffalo", "Mango Habanero", "BBQ Dulce", "Lemon Pepper"]
+        }
+      ]
+    },
+    {
+      "title": "🍟 Guarniciones y Bebidas",
+      "items": [
+        {
+          "id": "papas-gajo",
+          "name": "Papas Gajo Sazonadas",
+          "description": "Papas gajo crujientes con nuestro sazonador especial.",
+          "price": 60.00,
+          "sauces": []
+        },
+        {
+          "id": "refresco-cola",
+          "name": "Refresco Cola",
+          "description": "Lata de 355ml fría.",
+          "price": 25.00,
+          "sauces": []
+        }
+      ]
+    }
+  ]
+}

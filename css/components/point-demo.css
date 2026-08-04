@@ -1,0 +1,196 @@
+.point-demo-body {
+    overflow-x: hidden;
+}
+
+.point-header {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--spacing-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.point-demo-badge {
+    background-color: var(--color-secondary);
+    color: var(--color-text-primary);
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px var(--spacing-sm);
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    margin-left: var(--spacing-sm);
+}
+
+.point-layout {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md) var(--spacing-xl);
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: var(--spacing-lg);
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .point-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.point-menu .category-block {
+    margin-top: var(--spacing-lg);
+}
+
+.point-menu .products-grid {
+    align-items: stretch;
+}
+
+.point-order-panel {
+    position: sticky;
+    top: var(--spacing-md);
+    background-color: var(--bg-dark-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.point-order-items {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.point-order-footer {
+    padding: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-dark-card);
+}
+
+.pay-with-card-btn {
+    width: 100%;
+    background-color: var(--color-primary);
+    border: none;
+    color: var(--color-text-primary);
+    padding: var(--spacing-md);
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.pay-with-card-btn:hover:not(:disabled) {
+    background-color: var(--color-secondary);
+}
+
+.pay-with-card-btn:disabled {
+    background-color: var(--bg-dark-panel);
+    border: 1px solid var(--border-color);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+}
+
+.point-status-screen {
+    text-align: center;
+    padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.point-status-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+}
+
+.point-status-title {
+    font-size: 18px;
+    margin-bottom: var(--spacing-xs);
+}
+
+.point-status-sub {
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.point-status-pulse {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    margin: 0 auto var(--spacing-md);
+    animation: pointPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pointPulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+.point-simulate-box {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px dashed var(--border-color);
+}
+
+.point-simulate-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-sm);
+}
+
+.point-simulate-btn {
+    width: 100%;
+    background-color: transparent;
+    border: 1px dashed var(--color-primary);
+    color: var(--color-primary);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.point-simulate-btn:hover:not(:disabled) {
+    background-color: rgba(255, 107, 0, 0.1);
+}
+
+.point-simulate-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.point-status-processed .point-status-icon { color: #4caf50; }
+.point-status-failed .point-status-icon,
+.point-status-canceled .point-status-icon { color: var(--color-secondary); }
+
+.point-new-order-btn {
+    width: 100%;
+    background-color: var(--color-primary);
+    border: none;
+    color: var(--color-text-primary);
+    padding: var(--spacing-md);
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: var(--spacing-lg);
+}
+
+.point-mock-notice {
+    background-color: rgba(255, 107, 0, 0.1);
+    border: 1px solid rgba(255, 107, 0, 0.2);
+    color: var(--color-text-secondary);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 8px;
+    font-size: 12px;
+    max-width: 1000px;
+    margin: 0 auto var(--spacing-md);
+}

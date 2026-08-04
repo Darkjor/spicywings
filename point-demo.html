@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spicy Wings - Pedido en Tablet (Demo Mercado Pago Point)</title>
+    <meta name="description" content="Demo de pedido en tablet con cobro vía terminal Mercado Pago Point.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components/menu.css">
+    <link rel="stylesheet" href="css/components/point-demo.css">
+</head>
+<body class="point-demo-body">
+    <header class="main-header">
+        <div class="point-header">
+            <div class="logo">
+                <span class="logo-accent">SPICY</span>WINGS
+                <span class="point-demo-badge">TABLET · POINT DEMO</span>
+            </div>
+            <a href="/" style="color: var(--color-text-secondary); font-size: 13px; text-decoration: none;">← Volver al sitio</a>
+        </div>
+    </header>
+
+    <main style="margin-top: 90px;">
+        <div class="point-mock-notice" id="mode-notice"></div>
+
+        <div class="point-layout">
+            <section class="point-menu" id="point-menu">
+                <p style="color: var(--color-text-secondary); font-size: 14px;">Cargando menú…</p>
+            </section>
+
+            <aside class="point-order-panel">
+                <!-- Vista 1: armado del pedido -->
+                <div id="order-build-view">
+                    <div class="cart-header">
+                        <h2>Pedido en Mesa</h2>
+                    </div>
+                    <div class="point-order-items" id="order-items">
+                        <div class="cart-empty-message">Agrega productos del menú 🍗</div>
+                    </div>
+                    <div class="point-order-footer">
+                        <div class="cart-total-row">
+                            <span>Total:</span>
+                            <span class="cart-total-price" id="order-total">$0.00 MXN</span>
+                        </div>
+                        <button class="pay-with-card-btn" id="pay-btn" disabled>💳 Pagar con tarjeta</button>
+                    </div>
+                </div>
+
+                <!-- Vista 2: esperando pago en terminal -->
+                <div id="order-status-view" class="point-status-screen" style="display: none;">
+                    <div class="point-status-pulse" id="status-pulse"></div>
+                    <div class="point-status-icon" id="status-icon">💳</div>
+                    <div class="point-status-title" id="status-title">Esperando pago en terminal…</div>
+                    <div class="point-status-sub" id="status-sub">Confirma el cobro en la terminal Mercado Pago Point.</div>
+
+                    <div class="point-simulate-box" id="simulate-box">
+                        <div class="point-simulate-label">Solo demo/dev — sin terminal física</div>
+                        <button class="point-simulate-btn" id="simulate-btn">✅ Simular pago exitoso</button>
+                    </div>
+
+                    <button class="point-new-order-btn" id="new-order-btn" style="display: none;">Nuevo pedido</button>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <script src="js/point-demo.js"></script>
+</body>
+</html>
