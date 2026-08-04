@@ -5,7 +5,6 @@ const pointOrdersStore = require('../store/pointOrders');
 
 const router = express.Router();
 
-// Limitador propio para no compartir el contador con /api/create-checkout-session (Stripe)
 const pointLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 60,
@@ -37,7 +36,11 @@ router.post('/orders', pointLimiter, async (req, res) => {
       externalReference
     });
 
-    const record = pointOrdersStore.createOrder({
+    // Guardamos un registro local solo como bitácora — el id que manda el
+    // cliente para consultar/simular es directamente el de Mercado Pago,
+    // así el estado no depende de memoria compartida entre invocaciones
+    // serverless (Vercel no garantiza que el mismo proceso atienda el GET).
+    pointOrdersStore.createOrder({
       mpOrderId: mpOrder.id,
       externalReference,
       amount: numericAmount,
@@ -45,7 +48,15 @@ router.post('/orders', pointLimiter, async (req, res) => {
       status: mpOrder.status || 'created'
     });
 
-    res.status(201).json({ ...record, simulate_available: !mpClient.isConfigured() });
+    res.status(201).json({
+      id: mpOrder.id,
+      mp_order_id: mpOrder.id,
+      external_reference: externalReference,
+      amount: numericAmount,
+      description: description || '',
+      status: mpOrder.status || 'created',
+      simulate_available: !mpClient.isConfigured()
+    });
   } catch (error) {
     console.error('Error al crear orden Point:', error);
     res.status(502).json({ error: 'No se pudo crear el cobro en Mercado Pago: ' + error.message });
@@ -54,20 +65,27 @@ router.post('/orders', pointLimiter, async (req, res) => {
 
 router.get('/orders/:id', async (req, res) => {
   try {
-    const record = pointOrdersStore.getOrder(req.params.id);
-    if (!record) {
-      return res.status(404).json({ error: 'Orden no encontrada' });
-    }
+    const mpOrder = await mpClient.getOrder(req.params.id);
 
-    const mpOrder = await mpClient.getOrder(record.mp_order_id);
-    if (mpOrder && mpOrder.status && mpOrder.status !== record.status) {
+    const record = pointOrdersStore.findByMpOrderId(req.params.id);
+    if (record && mpOrder.status && mpOrder.status !== record.status) {
       pointOrdersStore.updateOrderStatus(record.id, mpOrder.status);
     }
 
-    res.json({ ...pointOrdersStore.getOrder(req.params.id), simulate_available: !mpClient.isConfigured() });
+    const payment = mpOrder.transactions && mpOrder.transactions.payments && mpOrder.transactions.payments[0];
+
+    res.json({
+      id: mpOrder.id,
+      mp_order_id: mpOrder.id,
+      external_reference: mpOrder.external_reference,
+      amount: payment ? Number(payment.amount) : (record ? record.amount : null),
+      description: mpOrder.description || (record ? record.description : ''),
+      status: mpOrder.status,
+      simulate_available: !mpClient.isConfigured()
+    });
   } catch (error) {
     console.error('Error al consultar orden Point:', error);
-    res.status(502).json({ error: 'No se pudo consultar el estado del cobro: ' + error.message });
+    res.status(404).json({ error: 'No se pudo consultar el estado del cobro: ' + error.message });
   }
 });
 
@@ -81,17 +99,12 @@ router.post('/orders/:id/simulate', async (req, res) => {
   }
 
   try {
-    const record = pointOrdersStore.getOrder(req.params.id);
-    if (!record) {
-      return res.status(404).json({ error: 'Orden no encontrada' });
-    }
-
     const { status, paymentMethodId } = req.body;
     if (!ALLOWED_SIMULATE_STATUSES.includes(status)) {
       return res.status(400).json({ error: `Estado inválido. Usa uno de: ${ALLOWED_SIMULATE_STATUSES.join(', ')}` });
     }
 
-    await mpClient.simulateOrderEvent(record.mp_order_id, {
+    await mpClient.simulateOrderEvent(req.params.id, {
       status,
       paymentMethodId: paymentMethodId || 'visa'
     });

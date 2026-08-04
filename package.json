@@ -1,7 +1,7 @@
 {
   "name": "spicywings-backend",
   "version": "1.0.0",
-  "description": "Backend para procesamiento de pagos de Stripe en Spicy Wings",
+  "description": "Backend de Spicy Wings: pedidos por WhatsApp y punto de venta en tablet con Mercado Pago Point",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -12,8 +12,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-rate-limit": "^8.5.2",
-    "helmet": "^8.2.0",
-    "stripe": "^15.12.0"
+    "helmet": "^8.2.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
