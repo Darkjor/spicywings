@@ -37,6 +37,18 @@
           "sauces": []
         }
       ]
+    },
+    {
+      "title": "🧪 Pruebas",
+      "items": [
+        {
+          "id": "prueba-cobro",
+          "name": "Prueba de cobro",
+          "description": "Artículo de $5 para probar el cobro real en la terminal.",
+          "price": 5.00,
+          "sauces": []
+        }
+      ]
     }
   ]
 }
