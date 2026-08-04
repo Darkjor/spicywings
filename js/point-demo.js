@@ -19,6 +19,9 @@
     const simulateBtn = document.getElementById('simulate-btn');
     const newOrderBtn = document.getElementById('new-order-btn');
     const modeNotice = document.getElementById('mode-notice');
+    const receiptBox = document.getElementById('receipt-box');
+    const receiptQr = document.getElementById('receipt-qr');
+    let receiptRenderedFor = null;
 
     modeNotice.textContent = 'Punto de venta Spicy Wings: al pagar, el cobro se envía directo a la terminal Mercado Pago Point en sucursal.';
 
@@ -127,6 +130,17 @@
         }
     }
 
+    function renderReceiptQr() {
+        if (receiptRenderedFor === currentOrderId) return;
+        receiptRenderedFor = currentOrderId;
+
+        const receiptUrl = `${window.location.origin}/receipt/${currentOrderId}`;
+        const qr = qrcode(0, 'M');
+        qr.addData(receiptUrl);
+        qr.make();
+        receiptQr.innerHTML = qr.createImgTag(4, 8, 'Ticket de compra');
+    }
+
     function setStatusView(status) {
         statusView.className = `point-status-screen point-status-${status}`;
 
@@ -134,6 +148,13 @@
         statusPulse.style.display = isFinal ? 'none' : 'block';
         simulateBox.style.display = (isFinal || !simulateAvailable) ? 'none' : 'block';
         newOrderBtn.style.display = isFinal ? 'block' : 'none';
+
+        if (status === 'processed') {
+            renderReceiptQr();
+            receiptBox.style.display = 'flex';
+        } else {
+            receiptBox.style.display = 'none';
+        }
 
         const config = {
             created: { icon: '💳', title: 'Enviando cobro a la terminal…', sub: 'Un momento, estamos preparando el cobro.' },
@@ -227,6 +248,7 @@
     newOrderBtn.addEventListener('click', () => {
         cart = [];
         currentOrderId = null;
+        receiptRenderedFor = null;
         if (pollTimer) {
             clearInterval(pollTimer);
             pollTimer = null;

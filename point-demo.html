@@ -74,12 +74,18 @@
                         <button class="point-simulate-btn" id="simulate-btn">✅ Simular pago exitoso</button>
                     </div>
 
+                    <div class="point-receipt-box" id="receipt-box" style="display: none;">
+                        <div id="receipt-qr" class="point-receipt-qr"></div>
+                        <div class="point-receipt-label">Escanea para ver tu ticket</div>
+                    </div>
+
                     <button class="point-new-order-btn" id="new-order-btn" style="display: none;">Nuevo pedido</button>
                 </div>
             </aside>
         </div>
     </main>
 
+    <script src="js/vendor/qrcode.js"></script>
     <script src="js/point-demo.js"></script>
 </body>
 </html>

@@ -171,6 +171,33 @@
 .point-status-failed .point-status-icon,
 .point-status-canceled .point-status-icon { color: var(--color-secondary); }
 
+.point-receipt-box {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.point-receipt-qr {
+    background-color: #ffffff;
+    padding: 12px;
+    border-radius: 12px;
+    display: inline-flex;
+    line-height: 0;
+}
+
+.point-receipt-qr img,
+.point-receipt-qr table {
+    width: 160px;
+    height: 160px;
+}
+
+.point-receipt-label {
+    margin-top: var(--spacing-sm);
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
 .point-new-order-btn {
     width: 100%;
     background-color: var(--color-primary);

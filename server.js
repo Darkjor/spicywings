@@ -50,8 +50,10 @@ app.get('/api/health', (req, res) => {
 // No toca ni depende del flujo de pedidos por WhatsApp.
 const pointRoutes = require('./routes/point');
 const mercadopagoWebhooks = require('./routes/webhooks');
+const receiptRoutes = require('./routes/receipt');
 app.use('/api/point', pointRoutes);
 app.use('/webhooks', mercadopagoWebhooks);
+app.use('/receipt', receiptRoutes);
 app.get('/point-demo', (req, res) => {
   res.sendFile(path.join(__dirname, 'point-demo.html'));
 });

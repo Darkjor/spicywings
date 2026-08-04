@@ -36,6 +36,10 @@
       "dest": "server.js"
     },
     {
+      "src": "/receipt/(.*)",
+      "dest": "server.js"
+    },
+    {
       "src": "/point-demo",
       "dest": "/point-demo.html"
     },
