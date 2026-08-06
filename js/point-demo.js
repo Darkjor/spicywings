@@ -8,11 +8,15 @@
     let currentOrderId = null;
     let pollTimer = null;
     let simulateAvailable = true;
+    let business = null;
+    let selectedTipPct = 0; // 0, 0.10, 0.15 o 0.20 — elegido con los botones de propina
 
     const menuEl = document.getElementById('point-menu');
     const orderItemsEl = document.getElementById('order-items');
     const orderTotalEl = document.getElementById('order-total');
     const payBtn = document.getElementById('pay-btn');
+    const tipButtons = document.querySelectorAll('.point-tip-btn');
+    const tipSummaryEl = document.getElementById('tip-summary');
 
     const buildView = document.getElementById('order-build-view');
     const statusView = document.getElementById('order-status-view');
@@ -30,16 +34,30 @@
     const receiptQr = document.getElementById('receipt-qr');
     let receiptRenderedFor = null;
 
+    // Formato de moneda: usa Intl.NumberFormat con currency/locale de
+    // data/business.json (ej. "MXN"/"es-MX"). Esto SOLO controla cómo se
+    // muestran los números (símbolo, separadores, decimales) — NO es
+    // traducción de textos de la interfaz, que siguen fijos en español.
+    function formatCurrency(amount) {
+        const currency = (business && business.currency) || 'MXN';
+        const locale = (business && business.locale) || 'es-MX';
+        return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount);
+    }
+
     // Nombre del negocio: se carga desde data/business.json (personalízalo ahí, no aquí)
     fetch('data/business.json')
         .then(res => res.json())
-        .then(business => {
+        .then(loadedBusiness => {
+            business = loadedBusiness;
             modeNotice.textContent = `Punto de venta ${business.name}: al pagar, el cobro se envía directo a la terminal Mercado Pago Point en sucursal.`;
             document.title = `${business.name} - Pedido en Tablet`;
             const logoAccent = document.querySelector('.logo-accent');
             const logoRest = logoAccent ? logoAccent.nextSibling : null;
             if (logoAccent) logoAccent.textContent = business.logoAccent || business.name;
             if (logoRest) logoRest.textContent = business.logoRest || '';
+            // El total ya pudo haberse renderizado con el formato default
+            // antes de que este fetch resolviera; lo refrescamos.
+            renderOrder();
         })
         .catch(() => {
             modeNotice.textContent = 'Punto de venta en tablet: al pagar, el cobro se envía directo a la terminal Mercado Pago Point.';
@@ -48,6 +66,44 @@
     function getCartTotal() {
         return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     }
+
+    // Propina opcional: se calcula sobre el subtotal del carrito (no sobre
+    // artículos individuales) y se suma al total que se manda a
+    // POST /api/point/orders.
+    function getTipAmount() {
+        return getCartTotal() * selectedTipPct;
+    }
+
+    function getOrderTotal() {
+        return getCartTotal() + getTipAmount();
+    }
+
+    function formatTipPct(pct) {
+        return `${Math.round(pct * 100)}%`;
+    }
+
+    function updateTipUI() {
+        if (tipSummaryEl) {
+            tipSummaryEl.textContent = selectedTipPct === 0
+                ? 'Sin propina'
+                : `Propina ${formatTipPct(selectedTipPct)}: ${formatCurrency(getTipAmount())}`;
+        }
+
+        tipButtons.forEach(btn => {
+            const pct = parseFloat(btn.dataset.tipPct);
+            const isSelected = pct === selectedTipPct;
+            btn.style.backgroundColor = isSelected ? 'var(--color-primary)' : 'transparent';
+            btn.style.color = isSelected ? 'var(--color-text-primary)' : 'var(--color-primary)';
+            btn.style.borderStyle = isSelected ? 'solid' : 'dashed';
+        });
+    }
+
+    tipButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            selectedTipPct = parseFloat(btn.dataset.tipPct) || 0;
+            renderOrder();
+        });
+    });
 
     function addToCart(id, name, price, option) {
         const existing = cart.find(item => item.id === id && item.option === option);
@@ -68,9 +124,9 @@
     }
 
     function renderOrder() {
-        const total = getCartTotal();
         payBtn.disabled = cart.length === 0;
-        orderTotalEl.textContent = `$${total.toFixed(2)} MXN`;
+        orderTotalEl.textContent = formatCurrency(getOrderTotal());
+        updateTipUI();
 
         if (cart.length === 0) {
             orderItemsEl.innerHTML = '<div class="cart-empty-message">Agrega productos del menú 🍗</div>';
@@ -82,7 +138,7 @@
                 <div class="cart-item-details">
                     <h4>${item.name}</h4>
                     ${item.option ? `<p class="cart-item-option">${item.option}</p>` : ''}
-                    <span class="cart-item-price">$${(item.price * item.qty).toFixed(2)} MXN</span>
+                    <span class="cart-item-price">${formatCurrency(item.price * item.qty)}</span>
                 </div>
                 <div class="cart-item-quantity-controls">
                     <button class="qty-btn" data-id="${item.id}" data-option="${item.option}" data-action="dec">-</button>
@@ -109,32 +165,39 @@
                 <div class="category-block">
                     <h2 class="category-title">${category.title}</h2>
                     <div class="products-grid">
-                        ${category.items.map(item => `
-                            <div class="product-card" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">
+                        ${category.items.map(item => {
+                            // Inventario simple: item.available === false lo muestra deshabilitado
+                            // y bloquea el botón "Agregar". Sin este campo (undefined) se asume
+                            // disponible, para no romper JSONs viejos sin el campo.
+                            const isAvailable = item.available !== false;
+                            return `
+                            <div class="product-card${isAvailable ? '' : ' product-unavailable'}" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" style="${isAvailable ? '' : 'opacity: 0.5;'}">
                                 <div class="product-info">
-                                    <h3>${item.name}</h3>
+                                    <h3>${item.name} ${isAvailable ? '' : '<span class="product-badge" style="position: static; display: inline-block;">Agotado</span>'}</h3>
                                     <p class="product-desc">${item.description}</p>
                                     ${item.sauces.length ? `
                                         <div class="customization-wrapper">
                                             <label>Elige una opción:</label>
-                                            <select class="sauce-select">
+                                            <select class="sauce-select" ${isAvailable ? '' : 'disabled'}>
                                                 ${item.sauces.map(s => `<option value="${s}">${s}</option>`).join('')}
                                             </select>
                                         </div>
                                     ` : ''}
                                     <div class="product-footer">
-                                        <span class="price">$${item.price.toFixed(2)} MXN</span>
-                                        <button class="add-to-cart-btn">Agregar</button>
+                                        <span class="price">${formatCurrency(item.price)}</span>
+                                        <button class="add-to-cart-btn" ${isAvailable ? '' : 'disabled'}>${isAvailable ? 'Agregar' : 'Agotado'}</button>
                                     </div>
                                 </div>
                             </div>
-                        `).join('')}
+                        `;
+                        }).join('')}
                     </div>
                 </div>
             `).join('');
 
             menuEl.querySelectorAll('.product-card').forEach(card => {
                 const addBtn = card.querySelector('.add-to-cart-btn');
+                if (addBtn.disabled) return;
                 addBtn.addEventListener('click', () => {
                     const sauceSelect = card.querySelector('.sauce-select');
                     addToCart(
@@ -218,14 +281,25 @@
         payBtn.disabled = true;
         payBtn.textContent = 'Creando cobro…';
 
-        const description = cart.map(i => `${i.qty}x ${i.name}`).join(', ');
+        // La propina no es un artículo del menú: se agrega como un renglón
+        // más al final del description (mismo formato "qty x nombre" separado
+        // por comas), así routes/receipt.js la lista en el ticket sin tener
+        // que tocar ese archivo (ya parte el description por comas). OJO: acá
+        // usamos "$" + toFixed(2) a propósito y NO formatCurrency() — algunos
+        // locales (ej. es-ES, de-DE) usan coma como separador decimal, lo que
+        // rompería el split(',') de receipt.js si el monto trajera una coma.
+        const itemsDescription = cart.map(i => `${i.qty}x ${i.name}`).join(', ');
+        const tipAmount = getTipAmount();
+        const description = tipAmount > 0
+            ? `${itemsDescription}, + Propina ${formatTipPct(selectedTipPct)} ($${tipAmount.toFixed(2)})`
+            : itemsDescription;
 
         try {
             const res = await fetch('/api/point/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    amount: getCartTotal(),
+                    amount: getOrderTotal(),
                     description,
                     externalReference: `tablet-${Date.now()}`
                 })
@@ -285,6 +359,7 @@
         cart = [];
         currentOrderId = null;
         receiptRenderedFor = null;
+        selectedTipPct = 0;
         if (pollTimer) {
             clearInterval(pollTimer);
             pollTimer = null;

@@ -5,6 +5,8 @@
   "heroTitle": "TU MARCA AQUÍ",
   "heroSubtitle": "Describe tu producto o servicio en una línea. Este texto, igual que el resto de la página, se personaliza como quieras.",
   "whatsappOrderTitle": "NUEVO PEDIDO",
+  "currency": "MXN",
+  "locale": "es-MX",
   "branches": [
     {
       "key": "sucursal-1",

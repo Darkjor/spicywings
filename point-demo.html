@@ -54,9 +54,22 @@
                         <div class="cart-empty-message">Agrega productos del menú 🍗</div>
                     </div>
                     <div class="point-order-footer">
+                        <!-- Propina opcional: calculada sobre el subtotal del carrito, se
+                             suma al total que se manda a POST /api/point/orders. Reutiliza
+                             el patrón visual de .point-simulate-box/.point-simulate-btn. -->
+                        <div class="point-simulate-box" id="tip-box">
+                            <div class="point-simulate-label">Propina (opcional)</div>
+                            <div id="tip-buttons" style="display: flex; gap: var(--spacing-sm);">
+                                <button type="button" class="point-simulate-btn point-tip-btn" data-tip-pct="0" style="width: auto; flex: 1;">Sin propina</button>
+                                <button type="button" class="point-simulate-btn point-tip-btn" data-tip-pct="0.10" style="width: auto; flex: 1;">10%</button>
+                                <button type="button" class="point-simulate-btn point-tip-btn" data-tip-pct="0.15" style="width: auto; flex: 1;">15%</button>
+                                <button type="button" class="point-simulate-btn point-tip-btn" data-tip-pct="0.20" style="width: auto; flex: 1;">20%</button>
+                            </div>
+                            <div id="tip-summary" style="color: var(--color-text-secondary); font-size: 12px; margin-top: var(--spacing-sm);">Sin propina</div>
+                        </div>
                         <div class="cart-total-row">
                             <span>Total:</span>
-                            <span class="cart-total-price" id="order-total">$0.00 MXN</span>
+                            <span class="cart-total-price" id="order-total">$0.00</span>
                         </div>
                         <button class="pay-with-card-btn" id="pay-btn" disabled>💳 Pagar con tarjeta</button>
                     </div>
