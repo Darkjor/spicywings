@@ -1,0 +1,169 @@
+/* Panel de administración (/admin). Archivo nuevo, no pisa nada de
+   css/variables.css ni de los demás css/components/*.css.
+
+   Nombres de variables: uso los nombres semánticos genéricos que se
+   asume van a existir tras el rediseño (--color-bg, --color-surface,
+   --color-border, --color-primary, --color-text-primary, etc.), con
+   fallback encadenado a los nombres actuales de css/variables.css
+   (--bg-dark-pure, --bg-dark-panel, --border-color...) por si esta copia
+   todavía no tiene el rediseño aplicado. var(--nuevo, var(--viejo, default))
+   resuelve al primero que exista como custom property. */
+.admin-page {
+    --admin-bg: var(--color-bg, var(--bg-dark-pure, #0c0c0c));
+    --admin-surface: var(--color-surface, var(--bg-dark-panel, #1a1a1a));
+    --admin-surface-alt: var(--color-surface-alt, var(--bg-dark-card, #262626));
+    --admin-border: var(--color-border, var(--border-color, #333333));
+    --admin-primary: var(--color-primary, #ff6b00);
+    --admin-text: var(--color-text-primary, #ffffff);
+    --admin-text-secondary: var(--color-text-secondary, #aaaaaa);
+    --admin-text-muted: var(--color-text-muted, #666666);
+
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--spacing-md) var(--spacing-md) var(--spacing-xl);
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.admin-header h1 {
+    font-size: 22px;
+}
+
+.admin-header h1 span {
+    color: var(--admin-primary);
+}
+
+.admin-back-link {
+    color: var(--admin-text-secondary);
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.admin-back-link:hover {
+    color: var(--admin-text);
+}
+
+.admin-section {
+    background-color: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.admin-section h2 {
+    font-size: 17px;
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-summary-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.admin-summary-card {
+    flex: 1 1 160px;
+    background-color: var(--admin-surface-alt);
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    padding: var(--spacing-md);
+}
+
+.admin-summary-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--admin-text-muted);
+    margin-bottom: var(--spacing-xs);
+}
+
+.admin-summary-value {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: var(--font-titles, inherit);
+    color: var(--admin-primary);
+}
+
+.admin-orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.admin-orders-table th,
+.admin-orders-table td {
+    text-align: left;
+    padding: var(--spacing-sm) var(--spacing-sm);
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-orders-table th {
+    color: var(--admin-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.admin-orders-table td.admin-amount {
+    text-align: right;
+    font-weight: 600;
+}
+
+.admin-empty-state,
+.admin-error-state,
+.admin-loading-state {
+    color: var(--admin-text-secondary);
+    font-size: 14px;
+    padding: var(--spacing-md) 0;
+}
+
+.admin-error-state {
+    color: var(--color-secondary, #e63946);
+}
+
+.admin-config-block {
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-config-block h3 {
+    font-size: 14px;
+    color: var(--admin-text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.admin-config-block pre {
+    background-color: var(--admin-surface-alt);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--admin-text);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.admin-readonly-notice {
+    background-color: rgba(255, 107, 0, 0.1);
+    border: 1px solid rgba(255, 107, 0, 0.25);
+    color: var(--admin-text-secondary);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 8px;
+    font-size: 13px;
+    margin-top: var(--spacing-md);
+}
+
+.admin-readonly-notice strong {
+    color: var(--admin-text);
+}

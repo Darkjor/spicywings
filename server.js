@@ -58,6 +58,13 @@ app.get('/point-demo', (req, res) => {
   res.sendFile(path.join(__dirname, 'point-demo.html'));
 });
 
+// --- Panel de administración (reporte de ventas del día, config solo lectura) ---
+// Protegido con HTTP Basic Auth (fail closed si ADMIN_PASSWORD no está
+// configurado — ver middleware/adminAuth.js).
+const adminAuthMiddleware = require('./middleware/adminAuth');
+const adminRoutes = require('./routes/admin');
+app.use('/admin', adminAuthMiddleware, adminRoutes);
+
 // Arrancar localmente si no estamos ejecutándonos en Vercel como función serverless
 if (process.env.NODE_ENV !== 'production' && require.main === module) {
   app.listen(PORT, () => {

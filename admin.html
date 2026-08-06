@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de administración</title>
+    <meta name="description" content="Panel de administración: reporte de ventas del día y configuración actual del negocio.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components/admin.css">
+</head>
+<body class="admin-page">
+    <div class="admin-header">
+        <h1><span>Panel</span> de administración</h1>
+        <a class="admin-back-link" href="/point-demo">&larr; Volver al punto de venta</a>
+    </div>
+
+    <section class="admin-section">
+        <h2>Reporte de ventas de hoy</h2>
+        <div id="sales-report">
+            <p class="admin-loading-state">Cargando reporte…</p>
+        </div>
+    </section>
+
+    <section class="admin-section">
+        <h2>Configuración actual (solo lectura)</h2>
+
+        <div class="admin-config-block">
+            <h3>data/business.json</h3>
+            <pre id="business-config">Cargando…</pre>
+        </div>
+
+        <div class="admin-config-block">
+            <h3>data/menu.json</h3>
+            <pre id="menu-config">Cargando…</pre>
+        </div>
+
+        <div class="admin-readonly-notice">
+            <strong>Esta sección es solo lectura.</strong> En Vercel (serverless) el
+            filesystem es de solo lectura en producción — un botón "Guardar" aquí
+            se vería como que funciona pero fallaría silenciosamente, o solo
+            funcionaría en local. Para editar el menú o la marca, modifica
+            <code>data/business.json</code> y <code>data/menu.json</code> en el
+            repo y haz commit — ver README.md.
+        </div>
+    </section>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>
