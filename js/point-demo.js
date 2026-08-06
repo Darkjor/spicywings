@@ -109,32 +109,39 @@
                 <div class="category-block">
                     <h2 class="category-title">${category.title}</h2>
                     <div class="products-grid">
-                        ${category.items.map(item => `
-                            <div class="product-card" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">
+                        ${category.items.map(item => {
+                            // Inventario simple: item.available === false lo muestra deshabilitado
+                            // y bloquea el botón "Agregar". Sin este campo (undefined) se asume
+                            // disponible, para no romper JSONs viejos sin el campo.
+                            const isAvailable = item.available !== false;
+                            return `
+                            <div class="product-card${isAvailable ? '' : ' product-unavailable'}" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" style="${isAvailable ? '' : 'opacity: 0.5;'}">
                                 <div class="product-info">
-                                    <h3>${item.name}</h3>
+                                    <h3>${item.name} ${isAvailable ? '' : '<span class="product-badge" style="position: static; display: inline-block;">Agotado</span>'}</h3>
                                     <p class="product-desc">${item.description}</p>
                                     ${item.sauces.length ? `
                                         <div class="customization-wrapper">
                                             <label>Elige una opción:</label>
-                                            <select class="sauce-select">
+                                            <select class="sauce-select" ${isAvailable ? '' : 'disabled'}>
                                                 ${item.sauces.map(s => `<option value="${s}">${s}</option>`).join('')}
                                             </select>
                                         </div>
                                     ` : ''}
                                     <div class="product-footer">
                                         <span class="price">$${item.price.toFixed(2)} MXN</span>
-                                        <button class="add-to-cart-btn">Agregar</button>
+                                        <button class="add-to-cart-btn" ${isAvailable ? '' : 'disabled'}>${isAvailable ? 'Agregar' : 'Agotado'}</button>
                                     </div>
                                 </div>
                             </div>
-                        `).join('')}
+                        `;
+                        }).join('')}
                     </div>
                 </div>
             `).join('');
 
             menuEl.querySelectorAll('.product-card').forEach(card => {
                 const addBtn = card.querySelector('.add-to-cart-btn');
+                if (addBtn.disabled) return;
                 addBtn.addEventListener('click', () => {
                     const sauceSelect = card.querySelector('.sauce-select');
                     addToCart(
