@@ -8,6 +8,7 @@
     let currentOrderId = null;
     let pollTimer = null;
     let simulateAvailable = true;
+    let business = null;
 
     const menuEl = document.getElementById('point-menu');
     const orderItemsEl = document.getElementById('order-items');
@@ -30,16 +31,30 @@
     const receiptQr = document.getElementById('receipt-qr');
     let receiptRenderedFor = null;
 
+    // Formato de moneda: usa Intl.NumberFormat con currency/locale de
+    // data/business.json (ej. "MXN"/"es-MX"). Esto SOLO controla cómo se
+    // muestran los números (símbolo, separadores, decimales) — NO es
+    // traducción de textos de la interfaz, que siguen fijos en español.
+    function formatCurrency(amount) {
+        const currency = (business && business.currency) || 'MXN';
+        const locale = (business && business.locale) || 'es-MX';
+        return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount);
+    }
+
     // Nombre del negocio: se carga desde data/business.json (personalízalo ahí, no aquí)
     fetch('data/business.json')
         .then(res => res.json())
-        .then(business => {
+        .then(loadedBusiness => {
+            business = loadedBusiness;
             modeNotice.textContent = `Punto de venta ${business.name}: al pagar, el cobro se envía directo a la terminal Mercado Pago Point en sucursal.`;
             document.title = `${business.name} - Pedido en Tablet`;
             const logoAccent = document.querySelector('.logo-accent');
             const logoRest = logoAccent ? logoAccent.nextSibling : null;
             if (logoAccent) logoAccent.textContent = business.logoAccent || business.name;
             if (logoRest) logoRest.textContent = business.logoRest || '';
+            // El total ya pudo haberse renderizado con el formato default
+            // antes de que este fetch resolviera; lo refrescamos.
+            renderOrder();
         })
         .catch(() => {
             modeNotice.textContent = 'Punto de venta en tablet: al pagar, el cobro se envía directo a la terminal Mercado Pago Point.';
@@ -70,7 +85,7 @@
     function renderOrder() {
         const total = getCartTotal();
         payBtn.disabled = cart.length === 0;
-        orderTotalEl.textContent = `$${total.toFixed(2)} MXN`;
+        orderTotalEl.textContent = formatCurrency(total);
 
         if (cart.length === 0) {
             orderItemsEl.innerHTML = '<div class="cart-empty-message">Agrega productos del menú 🍗</div>';
@@ -82,7 +97,7 @@
                 <div class="cart-item-details">
                     <h4>${item.name}</h4>
                     ${item.option ? `<p class="cart-item-option">${item.option}</p>` : ''}
-                    <span class="cart-item-price">$${(item.price * item.qty).toFixed(2)} MXN</span>
+                    <span class="cart-item-price">${formatCurrency(item.price * item.qty)}</span>
                 </div>
                 <div class="cart-item-quantity-controls">
                     <button class="qty-btn" data-id="${item.id}" data-option="${item.option}" data-action="dec">-</button>
@@ -128,7 +143,7 @@
                                         </div>
                                     ` : ''}
                                     <div class="product-footer">
-                                        <span class="price">$${item.price.toFixed(2)} MXN</span>
+                                        <span class="price">${formatCurrency(item.price)}</span>
                                         <button class="add-to-cart-btn" ${isAvailable ? '' : 'disabled'}>${isAvailable ? 'Agregar' : 'Agotado'}</button>
                                     </div>
                                 </div>

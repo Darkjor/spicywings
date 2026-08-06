@@ -133,6 +133,16 @@
         let business = null;
         let branches = {};
 
+        // Formato de moneda: usa Intl.NumberFormat con currency/locale de
+        // data/business.json (ej. "MXN"/"es-MX"). Esto SOLO controla cómo se
+        // muestran los números (símbolo, separadores, decimales) — NO es
+        // traducción de textos de la interfaz, que siguen fijos en español.
+        function formatCurrency(amount) {
+            const currency = (business && business.currency) || "MXN";
+            const locale = (business && business.locale) || "es-MX";
+            return new Intl.NumberFormat(locale, { style: "currency", currency }).format(amount);
+        }
+
         function getActiveBranchKey() {
             return localStorage.getItem("active_branch");
         }
@@ -221,7 +231,7 @@
 
             if (cart.length === 0) {
                 container.innerHTML = `<div class="cart-empty-message">Tu carrito está vacío 🍗</div>`;
-                if (totalPriceEl) totalPriceEl.textContent = "$0.00 MXN";
+                if (totalPriceEl) totalPriceEl.textContent = formatCurrency(0);
                 return;
             }
 
@@ -230,7 +240,7 @@
                     <div class="cart-item-details">
                         <h4>${item.name}</h4>
                         ${item.option ? `<p class="cart-item-option">${item.option}</p>` : ""}
-                        <span class="cart-item-price">$${(item.price * item.qty).toFixed(2)} MXN</span>
+                        <span class="cart-item-price">${formatCurrency(item.price * item.qty)}</span>
                     </div>
                     <div class="cart-item-quantity-controls">
                         <button class="qty-btn" data-id="${item.id}" data-option="${item.option}" data-action="dec">-</button>
@@ -251,7 +261,7 @@
             });
 
             if (totalPriceEl) {
-                totalPriceEl.textContent = `$${getCartTotal().toFixed(2)} MXN`;
+                totalPriceEl.textContent = formatCurrency(getCartTotal());
             }
         }
 
@@ -295,10 +305,10 @@
 
             currentCart.forEach(function(item) {
                 var sauceText = item.option ? " (" + item.option + ")" : "";
-                msg += "• " + item.qty + "x " + item.name + sauceText + " - $" + (item.price * item.qty).toFixed(2) + " MXN\n";
+                msg += "• " + item.qty + "x " + item.name + sauceText + " - " + formatCurrency(item.price * item.qty) + "\n";
             });
 
-            msg += "\n" + money + " *Total a Pagar:* $" + total.toFixed(2) + " MXN\n";
+            msg += "\n" + money + " *Total a Pagar:* " + formatCurrency(total) + "\n";
             msg += "--------------------------------------\n";
             if (notes) {
                 msg += bubble + " *Notas:* " + notes + "\n";
@@ -362,7 +372,7 @@
                                         </div>
                                     ` : ""}
                                     <div class="product-footer">
-                                        <span class="price">$${item.price.toFixed(2)} MXN</span>
+                                        <span class="price">${formatCurrency(item.price)}</span>
                                         <button class="add-to-cart-btn" ${isAvailable ? "" : "disabled"}>${isAvailable ? "Agregar" : "Agotado"}</button>
                                     </div>
                                 </div>

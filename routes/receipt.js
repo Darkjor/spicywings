@@ -10,8 +10,18 @@ function loadBusinessConfig() {
     const raw = fs.readFileSync(path.join(__dirname, '..', 'data', 'business.json'), 'utf8');
     return JSON.parse(raw);
   } catch (error) {
-    return { name: 'Tu Negocio', logoAccent: 'TU', logoRest: 'NEGOCIO' };
+    return { name: 'Tu Negocio', logoAccent: 'TU', logoRest: 'NEGOCIO', currency: 'MXN', locale: 'es-MX' };
   }
+}
+
+// Formato de moneda: usa el Intl nativo de Node (sin dependencias) con el
+// currency/locale de data/business.json. Esto SOLO controla cómo se
+// muestra el número (símbolo, separadores, decimales) — NO es traducción
+// de textos de la interfaz, que siguen fijos en español.
+function formatCurrency(amount, business) {
+  const currency = (business && business.currency) || 'MXN';
+  const locale = (business && business.locale) || 'es-MX';
+  return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount);
 }
 
 function escapeHtml(value) {
@@ -49,7 +59,7 @@ router.get('/:id', async (req, res) => {
     const business = loadBusinessConfig();
     const mpOrder = await mpClient.getOrder(req.params.id);
     const payment = mpOrder.transactions && mpOrder.transactions.payments && mpOrder.transactions.payments[0];
-    const amount = payment ? Number(payment.amount).toFixed(2) : '—';
+    const amount = payment ? formatCurrency(Number(payment.amount), business) : '—';
     const items = (mpOrder.description || `Pedido ${business.name}`)
       .split(',')
       .map(item => item.trim())
@@ -128,7 +138,7 @@ router.get('/:id', async (req, res) => {
     <div class="divider"></div>
     <div class="row"><span>Folio</span><span>${escapeHtml(mpOrder.external_reference || mpOrder.id)}</span></div>
     <div class="row"><span>Fecha</span><span>${escapeHtml(formatDate(mpOrder.date_created))}</span></div>
-    <div class="total-row"><span>Total</span><span>$${amount} MXN</span></div>
+    <div class="total-row"><span>Total</span><span>${amount === '—' ? amount : escapeHtml(amount)}</span></div>
 
     <div class="footer">Gracias por tu compra en ${escapeHtml(business.name)}</div>
   </div>
