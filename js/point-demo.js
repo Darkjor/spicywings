@@ -9,11 +9,14 @@
     let pollTimer = null;
     let simulateAvailable = true;
     let business = null;
+    let selectedTipPct = 0; // 0, 0.10, 0.15 o 0.20 — elegido con los botones de propina
 
     const menuEl = document.getElementById('point-menu');
     const orderItemsEl = document.getElementById('order-items');
     const orderTotalEl = document.getElementById('order-total');
     const payBtn = document.getElementById('pay-btn');
+    const tipButtons = document.querySelectorAll('.point-tip-btn');
+    const tipSummaryEl = document.getElementById('tip-summary');
 
     const buildView = document.getElementById('order-build-view');
     const statusView = document.getElementById('order-status-view');
@@ -64,6 +67,44 @@
         return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     }
 
+    // Propina opcional: se calcula sobre el subtotal del carrito (no sobre
+    // artículos individuales) y se suma al total que se manda a
+    // POST /api/point/orders.
+    function getTipAmount() {
+        return getCartTotal() * selectedTipPct;
+    }
+
+    function getOrderTotal() {
+        return getCartTotal() + getTipAmount();
+    }
+
+    function formatTipPct(pct) {
+        return `${Math.round(pct * 100)}%`;
+    }
+
+    function updateTipUI() {
+        if (tipSummaryEl) {
+            tipSummaryEl.textContent = selectedTipPct === 0
+                ? 'Sin propina'
+                : `Propina ${formatTipPct(selectedTipPct)}: ${formatCurrency(getTipAmount())}`;
+        }
+
+        tipButtons.forEach(btn => {
+            const pct = parseFloat(btn.dataset.tipPct);
+            const isSelected = pct === selectedTipPct;
+            btn.style.backgroundColor = isSelected ? 'var(--color-primary)' : 'transparent';
+            btn.style.color = isSelected ? 'var(--color-text-primary)' : 'var(--color-primary)';
+            btn.style.borderStyle = isSelected ? 'solid' : 'dashed';
+        });
+    }
+
+    tipButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            selectedTipPct = parseFloat(btn.dataset.tipPct) || 0;
+            renderOrder();
+        });
+    });
+
     function addToCart(id, name, price, option) {
         const existing = cart.find(item => item.id === id && item.option === option);
         if (existing) {
@@ -83,9 +124,9 @@
     }
 
     function renderOrder() {
-        const total = getCartTotal();
         payBtn.disabled = cart.length === 0;
-        orderTotalEl.textContent = formatCurrency(total);
+        orderTotalEl.textContent = formatCurrency(getOrderTotal());
+        updateTipUI();
 
         if (cart.length === 0) {
             orderItemsEl.innerHTML = '<div class="cart-empty-message">Agrega productos del menú 🍗</div>';
@@ -240,14 +281,25 @@
         payBtn.disabled = true;
         payBtn.textContent = 'Creando cobro…';
 
-        const description = cart.map(i => `${i.qty}x ${i.name}`).join(', ');
+        // La propina no es un artículo del menú: se agrega como un renglón
+        // más al final del description (mismo formato "qty x nombre" separado
+        // por comas), así routes/receipt.js la lista en el ticket sin tener
+        // que tocar ese archivo (ya parte el description por comas). OJO: acá
+        // usamos "$" + toFixed(2) a propósito y NO formatCurrency() — algunos
+        // locales (ej. es-ES, de-DE) usan coma como separador decimal, lo que
+        // rompería el split(',') de receipt.js si el monto trajera una coma.
+        const itemsDescription = cart.map(i => `${i.qty}x ${i.name}`).join(', ');
+        const tipAmount = getTipAmount();
+        const description = tipAmount > 0
+            ? `${itemsDescription}, + Propina ${formatTipPct(selectedTipPct)} ($${tipAmount.toFixed(2)})`
+            : itemsDescription;
 
         try {
             const res = await fetch('/api/point/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    amount: getCartTotal(),
+                    amount: getOrderTotal(),
                     description,
                     externalReference: `tablet-${Date.now()}`
                 })
@@ -307,6 +359,7 @@
         cart = [];
         currentOrderId = null;
         receiptRenderedFor = null;
+        selectedTipPct = 0;
         if (pollTimer) {
             clearInterval(pollTimer);
             pollTimer = null;
