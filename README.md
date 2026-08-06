@@ -5,6 +5,12 @@ tarjeta usando una terminal física **Mercado Pago Point** (Orders API).
 Pensado como plantilla: la marca, las sucursales y el menú viven en dos
 archivos JSON, no hardcodeados en el código.
 
+> **¿Vas a retomar este proyecto con un agente de IA (Antigravity u otro)?**
+> Lee primero [`AGENTS.md`](./AGENTS.md) — es una auditoría técnica completa
+> pensada para que un agente entienda el proyecto en frío sin tener que
+> re-investigarlo: mapa de archivos, decisiones de arquitectura, código
+> temporal pendiente de quitar, y pendientes conocidos.
+
 ## Qué incluye
 
 - **`/` (o `/index.html`)** — sitio de pedidos: el cliente arma su carrito y
