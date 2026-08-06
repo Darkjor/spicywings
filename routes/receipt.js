@@ -1,7 +1,18 @@
 const express = require('express');
+const path = require('path');
+const fs = require('fs');
 const mpClient = require('../lib/mercadopago');
 
 const router = express.Router();
+
+function loadBusinessConfig() {
+  try {
+    const raw = fs.readFileSync(path.join(__dirname, '..', 'data', 'business.json'), 'utf8');
+    return JSON.parse(raw);
+  } catch (error) {
+    return { name: 'Tu Negocio', logoAccent: 'TU', logoRest: 'NEGOCIO' };
+  }
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -35,10 +46,11 @@ function formatDate(isoString) {
 
 router.get('/:id', async (req, res) => {
   try {
+    const business = loadBusinessConfig();
     const mpOrder = await mpClient.getOrder(req.params.id);
     const payment = mpOrder.transactions && mpOrder.transactions.payments && mpOrder.transactions.payments[0];
     const amount = payment ? Number(payment.amount).toFixed(2) : '—';
-    const items = (mpOrder.description || 'Pedido Spicy Wings')
+    const items = (mpOrder.description || `Pedido ${business.name}`)
       .split(',')
       .map(item => item.trim())
       .filter(Boolean);
@@ -49,7 +61,7 @@ router.get('/:id', async (req, res) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ticket - Spicy Wings</title>
+  <title>Ticket - ${escapeHtml(business.name)}</title>
   <link rel="stylesheet" href="/css/variables.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,7 +119,7 @@ router.get('/:id', async (req, res) => {
 </head>
 <body>
   <div class="ticket">
-    <h1><span>SPICY</span>WINGS</h1>
+    <h1><span>${escapeHtml(business.logoAccent || business.name)}</span>${escapeHtml(business.logoRest || '')}</h1>
     <div class="sub">Ticket de compra</div>
     <div class="status">${escapeHtml(STATUS_LABELS[mpOrder.status] || mpOrder.status || 'Pagado')}</div>
 
@@ -118,7 +130,7 @@ router.get('/:id', async (req, res) => {
     <div class="row"><span>Fecha</span><span>${escapeHtml(formatDate(mpOrder.date_created))}</span></div>
     <div class="total-row"><span>Total</span><span>$${amount} MXN</span></div>
 
-    <div class="footer">Gracias por tu compra en Spicy Wings 🍗</div>
+    <div class="footer">Gracias por tu compra en ${escapeHtml(business.name)}</div>
   </div>
 </body>
 </html>`);

@@ -1,38 +1,38 @@
 {
   "categories": [
     {
-      "title": "🍗 Alitas Crujientes",
+      "title": "🍽️ Categoría de ejemplo 1",
       "items": [
         {
-          "id": "alitas-10",
-          "name": "Alitas (10 piezas)",
-          "description": "Alitas fritas al momento con el nivel de crujencia perfecto.",
+          "id": "producto-1",
+          "name": "Producto de ejemplo 1",
+          "description": "Describe aquí tu producto. Este texto se personaliza como quieras.",
           "price": 130.00,
-          "sauces": ["Mango Habanero", "Buffalo", "BBQ Dulce", "Lemon Pepper"]
+          "sauces": ["Opción A", "Opción B", "Opción C"]
         },
         {
-          "id": "alitas-20",
-          "name": "Alitas (20 piezas)",
-          "description": "Doble ración para compartir con salsas a tu elección.",
+          "id": "producto-2",
+          "name": "Producto de ejemplo 2",
+          "description": "Otro producto de ejemplo, con variantes seleccionables.",
           "price": 240.00,
-          "sauces": ["Buffalo", "Mango Habanero", "BBQ Dulce", "Lemon Pepper"]
+          "sauces": ["Opción A", "Opción B", "Opción C"]
         }
       ]
     },
     {
-      "title": "🍟 Guarniciones y Bebidas",
+      "title": "🛒 Categoría de ejemplo 2",
       "items": [
         {
-          "id": "papas-gajo",
-          "name": "Papas Gajo Sazonadas",
-          "description": "Papas gajo crujientes con nuestro sazonador especial.",
+          "id": "producto-3",
+          "name": "Producto de ejemplo 3",
+          "description": "Un producto sin variantes seleccionables.",
           "price": 60.00,
           "sauces": []
         },
         {
-          "id": "refresco-cola",
-          "name": "Refresco Cola",
-          "description": "Lata de 355ml fría.",
+          "id": "producto-4",
+          "name": "Producto de ejemplo 4",
+          "description": "Otro producto sin variantes.",
           "price": 25.00,
           "sauces": []
         }

@@ -25,7 +25,20 @@
     const receiptQr = document.getElementById('receipt-qr');
     let receiptRenderedFor = null;
 
-    modeNotice.textContent = 'Punto de venta Spicy Wings: al pagar, el cobro se envía directo a la terminal Mercado Pago Point en sucursal.';
+    // Nombre del negocio: se carga desde data/business.json (personalízalo ahí, no aquí)
+    fetch('data/business.json')
+        .then(res => res.json())
+        .then(business => {
+            modeNotice.textContent = `Punto de venta ${business.name}: al pagar, el cobro se envía directo a la terminal Mercado Pago Point en sucursal.`;
+            document.title = `${business.name} - Pedido en Tablet`;
+            const logoAccent = document.querySelector('.logo-accent');
+            const logoRest = logoAccent ? logoAccent.nextSibling : null;
+            if (logoAccent) logoAccent.textContent = business.logoAccent || business.name;
+            if (logoRest) logoRest.textContent = business.logoRest || '';
+        })
+        .catch(() => {
+            modeNotice.textContent = 'Punto de venta en tablet: al pagar, el cobro se envía directo a la terminal Mercado Pago Point.';
+        });
 
     function getCartTotal() {
         return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -63,7 +76,7 @@
             <div class="cart-item">
                 <div class="cart-item-details">
                     <h4>${item.name}</h4>
-                    ${item.option ? `<p class="cart-item-option">Salsa: ${item.option}</p>` : ''}
+                    ${item.option ? `<p class="cart-item-option">${item.option}</p>` : ''}
                     <span class="cart-item-price">$${(item.price * item.qty).toFixed(2)} MXN</span>
                 </div>
                 <div class="cart-item-quantity-controls">
@@ -98,7 +111,7 @@
                                     <p class="product-desc">${item.description}</p>
                                     ${item.sauces.length ? `
                                         <div class="customization-wrapper">
-                                            <label>Elige Salsa:</label>
+                                            <label>Elige una opción:</label>
                                             <select class="sauce-select">
                                                 ${item.sauces.map(s => `<option value="${s}">${s}</option>`).join('')}
                                             </select>

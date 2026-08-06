@@ -32,7 +32,7 @@ router.post('/orders', pointLimiter, async (req, res) => {
 
     const mpOrder = await mpClient.createPointOrder({
       amount: numericAmount,
-      description: description || 'Pedido Spicy Wings',
+      description: description || 'Pedido',
       externalReference
     });
 

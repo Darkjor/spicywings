@@ -61,7 +61,7 @@ app.get('/point-demo', (req, res) => {
 // Arrancar localmente si no estamos ejecutándonos en Vercel como función serverless
 if (process.env.NODE_ENV !== 'production' && require.main === module) {
   app.listen(PORT, () => {
-    console.log(`Servidor Spicy Wings corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
   });
 }
 

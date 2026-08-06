@@ -1,7 +1,7 @@
 {
-  "name": "spicywings-backend",
+  "name": "tablet-point-pos",
   "version": "1.0.0",
-  "description": "Backend de Spicy Wings: pedidos por WhatsApp y punto de venta en tablet con Mercado Pago Point",
+  "description": "Sitio de pedidos por WhatsApp + punto de venta en tablet con Mercado Pago Point. Personaliza data/business.json y data/menu.json para tu negocio.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

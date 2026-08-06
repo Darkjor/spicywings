@@ -1,7 +1,8 @@
 {
-  "name": "Spicy Wings - Pedido en Tablet",
-  "short_name": "SW Tablet",
-  "description": "Pedido en tablet con cobro vía terminal Mercado Pago Point.",
+  "_comment": "Manifest estático (no puede leer data/business.json) — personaliza name/short_name aquí a mano al rebrandear.",
+  "name": "Tu Marca Aquí - Pedido en Tablet",
+  "short_name": "Tablet POS",
+  "description": "Punto de venta en tablet con cobro vía terminal Mercado Pago Point.",
   "start_url": "point-demo.html",
   "scope": ".",
   "display": "standalone",

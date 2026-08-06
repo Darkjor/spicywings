@@ -1,0 +1,22 @@
+{
+  "name": "Tu Negocio",
+  "logoAccent": "TU",
+  "logoRest": "MARCA",
+  "heroTitle": "TU MARCA AQUÍ",
+  "heroSubtitle": "Describe tu producto o servicio en una línea. Este texto, igual que el resto de la página, se personaliza como quieras.",
+  "whatsappOrderTitle": "NUEVO PEDIDO",
+  "branches": [
+    {
+      "key": "sucursal-1",
+      "name": "Tu Sucursal 1",
+      "phone": "5210000000000",
+      "address": "Dirección de ejemplo #123, Tu Colonia"
+    },
+    {
+      "key": "sucursal-2",
+      "name": "Tu Sucursal 2",
+      "phone": "5210000000000",
+      "address": "Dirección de ejemplo #456, Tu Colonia"
+    }
+  ]
+}
