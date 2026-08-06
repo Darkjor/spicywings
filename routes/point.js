@@ -1,3 +1,7 @@
+// Endpoints del punto de venta en tablet: crear el cobro (lo manda a la
+// terminal Point automáticamente), consultar su estado (para el polling del
+// frontend) y simularlo en modo dev/mock. Ver lib/mercadopago.js para el
+// detalle de cómo se decide entre API real y modo simulado.
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const mpClient = require('../lib/mercadopago');

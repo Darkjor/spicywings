@@ -1,3 +1,8 @@
+// Lógica del punto de venta en tablet (/point-demo): carrito, creación del
+// cobro vía POST /api/point/orders, y polling de su estado cada 2s hasta que
+// la terminal Point lo confirma. Marca, colores y menú se cargan desde
+// data/business.json y data/menu.json — no hay nada de negocio hardcodeado
+// aquí.
 (() => {
     let cart = [];
     let currentOrderId = null;
@@ -146,6 +151,9 @@
     }
 
     function renderReceiptQr() {
+        // El polling llama setStatusView() cada 2s mientras el estado siga
+        // "processed" (por ejemplo si el usuario tarda en darle "Nuevo
+        // pedido") — este guard evita regenerar el mismo QR en cada tick.
         if (receiptRenderedFor === currentOrderId) return;
         receiptRenderedFor = currentOrderId;
 

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Sitio de pedidos por WhatsApp + punto de venta en tablet con Mercado Pago Point. Personaliza data/business.json y data/menu.json para tu negocio.",
   "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"

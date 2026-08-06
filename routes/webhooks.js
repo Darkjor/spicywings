@@ -4,6 +4,13 @@ const pointOrdersStore = require('../store/pointOrders');
 
 const router = express.Router();
 
+// Recibe las notificaciones de Mercado Pago cuando cambia el estado de una
+// order (pago aceptado, rechazado, etc). Valida la firma HMAC antes de
+// confiar en el payload — ver mpClient.verifyWebhookSignature para el
+// detalle del algoritmo. Actualizar pointOrdersStore aquí es best-effort
+// (ver la nota en store/pointOrders.js): el frontend nunca depende de esto
+// para saber el estado, siempre lo confirma consultando la API de Mercado
+// Pago directo (GET /api/point/orders/:id).
 router.post('/mercadopago', async (req, res) => {
   try {
     const xSignature = req.header('x-signature');
