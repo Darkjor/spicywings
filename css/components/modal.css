@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(10, 10, 10, 0.45);
     z-index: 300;
     display: flex;
     justify-content: center;
@@ -20,10 +20,11 @@
 }
 
 .modal-content {
-    background-color: var(--bg-dark-panel);
-    border: 1px solid var(--border-color);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
     padding: var(--spacing-xl);
-    border-radius: 16px;
+    border-radius: var(--radius-md);
     width: 90%;
     max-width: 500px;
     position: relative;
@@ -65,11 +66,11 @@
 }
 
 .branch-option-btn {
-    background-color: var(--bg-dark-card);
-    border: 1px solid var(--border-color);
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-border);
     color: var(--color-text-primary);
     padding: var(--spacing-md);
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     cursor: pointer;
     text-align: left;
     display: flex;
@@ -106,11 +107,11 @@
 
 .form-group input, .form-group textarea {
     width: 100%;
-    background-color: var(--bg-dark-card);
-    border: 1px solid var(--border-color);
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-border);
     color: var(--color-text-primary);
     padding: var(--spacing-md);
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     font-family: var(--font-body);
 }
 
@@ -122,10 +123,10 @@
 .delivery-methods {
     display: flex;
     gap: var(--spacing-lg);
-    background-color: var(--bg-dark-card);
+    background-color: var(--color-surface-2);
     padding: var(--spacing-md);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
 }
 
 .radio-label {
@@ -144,7 +145,7 @@
     border: 1px solid rgba(255, 107, 0, 0.2);
     color: var(--color-text-primary);
     padding: var(--spacing-md);
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     font-size: 14px;
     margin-bottom: var(--spacing-lg);
     text-align: center;
@@ -156,7 +157,7 @@
     border: none;
     color: var(--color-text-primary);
     padding: var(--spacing-md);
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
@@ -164,5 +165,6 @@
 }
 
 .submit-order-btn:hover {
-    background-color: var(--color-secondary);
+    filter: brightness(0.94);
+    box-shadow: var(--shadow-md);
 }
