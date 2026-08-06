@@ -40,6 +40,14 @@
       "dest": "server.js"
     },
     {
+      "src": "/admin",
+      "dest": "server.js"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "server.js"
+    },
+    {
       "src": "/point-demo",
       "dest": "/point-demo.html"
     },
