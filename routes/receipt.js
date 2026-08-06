@@ -66,7 +66,7 @@ router.get('/:id', async (req, res) => {
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: var(--bg-dark-pure);
+      background-color: var(--color-bg);
       color: var(--color-text-primary);
       font-family: var(--font-body);
       display: flex;
@@ -76,9 +76,10 @@ router.get('/:id', async (req, res) => {
     .ticket {
       width: 100%;
       max-width: 380px;
-      background-color: var(--bg-dark-panel);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md);
+      border-radius: var(--radius-md);
       padding: 28px 24px;
     }
     .ticket h1 {
@@ -107,7 +108,7 @@ router.get('/:id', async (req, res) => {
       width: fit-content;
     }
     .divider {
-      border-top: 1px dashed var(--border-color);
+      border-top: 1px dashed var(--color-border);
       margin: 16px 0;
     }
     .items { font-size: 14px; color: var(--color-text-primary); line-height: 1.8; }
@@ -139,7 +140,7 @@ router.get('/:id', async (req, res) => {
     res.send(`<!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ticket no encontrado</title></head>
-<body style="background:#0c0c0c;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:24px;">
+<body style="background:#FFFFFF;color:#0A0A0A;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:24px;">
 <div>No se encontró el ticket para esta orden.</div>
 </body></html>`);
   }
