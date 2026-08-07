@@ -22,7 +22,9 @@ archivos JSON, no hardcodeados en el código.
   pareo Bluetooth/NFC con la tablet).
 - **`/receipt/:id`** — ticket digital: la terminal Point no imprime, así que
   al confirmarse el pago aparece un QR en la tablet que el cliente escanea
-  para ver su ticket.
+  para ver su ticket. Incluye propina si se agregó una.
+- **`/admin`** — panel protegido (usuario/password) con el reporte de
+  ventas del día y la configuración actual del negocio (solo lectura).
 
 ## Arrancar en local
 
@@ -42,9 +44,12 @@ enseñar la demo completa desde el día uno.
 Dos archivos, nada de buscar-y-reemplazar en el código:
 
 - **`data/business.json`** — nombre del negocio, logo (texto), sucursales
-  (nombre/teléfono/dirección) y el título del mensaje de WhatsApp.
-- **`data/menu.json`** — categorías y productos, con precio y variantes
-  opcionales (ej. salsas, tamaños).
+  (nombre/teléfono/dirección), el título del mensaje de WhatsApp, y
+  `currency`/`locale` (controla cómo se muestran los montos — símbolo,
+  decimales — no traduce texto).
+- **`data/menu.json`** — categorías y productos, con precio, variantes
+  opcionales (ej. salsas, tamaños), y `available` (pon `false` para marcar
+  un producto como agotado — se deshabilita en el menú automáticamente).
 
 `index.html` y `/point-demo` leen ambos archivos en tiempo de carga — un
 cambio ahí se refleja en todo el sitio, incluido el ticket digital.
@@ -67,6 +72,7 @@ Point corre en modo mock.
 | `MP_ACCESS_TOKEN` | Access token de Mercado Pago (test o producción). Sin esto, modo mock. |
 | `MP_TERMINAL_ID` | ID de la terminal Point que va a recibir los cobros. Se obtiene con `GET /terminals/v1/list` de la API de Mercado Pago. |
 | `MP_WEBHOOK_SECRET` | Secreto para validar la firma de los webhooks (panel de Mercado Pago → tu app → Webhooks). |
+| `ADMIN_USER` / `ADMIN_PASSWORD` | Credenciales del panel `/admin`. Sin `ADMIN_PASSWORD`, el panel responde 503 (deshabilitado, no abierto). |
 | `STRIPE_SECRET_KEY` | Ya no se usa (Stripe se quitó del checkout). Se puede eliminar si no queda ninguna integración pendiente. |
 
 ## Arquitectura — decisiones que vale la pena conocer
@@ -88,6 +94,13 @@ Point corre en modo mock.
   en cuanto hay credenciales reales configuradas — evita confundir un cobro
   de mentiras con uno real cuando ya hay una terminal física conectada.
 
+- **El panel `/admin` es de solo lectura para configuración, a propósito.**
+  En Vercel serverless el filesystem es de solo lectura en producción, así
+  que un botón "Guardar" ahí parecería funcionar pero fallaría en
+  silencio. Para editar menú/marca, sigue siendo: modificar los JSON en el
+  repo y hacer commit. El reporte de ventas sí es en vivo (consulta directo
+  la API de Mercado Pago, sin base de datos propia).
+
 ## Deploy
 
 Pensado para Vercel (`vercel.json` ya incluido: server.js como función
@@ -102,5 +115,6 @@ extra).
 - No hay base de datos real — para reportes o historial confiable de
   ventas, `store/pointOrders.js` habría que reemplazarlo por Postgres,
   Supabase, etc.
-- Un solo idioma (español) y una sola moneda (MXN) asumidos en varios
-  textos.
+- Un solo idioma (español) en toda la interfaz — la moneda/formato de
+  números sí es configurable (`data/business.json`), pero los textos no se
+  traducen.

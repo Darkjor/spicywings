@@ -11,8 +11,10 @@ archivo porque se commitea al repo.
 
 Un sitio de pedidos por WhatsApp (estático, sin backend) más un punto de
 venta en tablet que cobra con tarjeta usando una terminal física Mercado
-Pago Point (Orders API), diseñado como plantilla reutilizable: la marca, las
-sucursales y el menú viven en JSON, no hardcodeados.
+Pago Point (Orders API), más un panel de administración con reporte de
+ventas del día, diseñado como plantilla reutilizable: la marca, las
+sucursales y el menú viven en JSON, no hardcodeados. Diseño visual: Swiss
+minimalista blanco/monocromático con un solo color de acento (naranja).
 
 ## 2. Los dos flujos, independientes entre sí
 
@@ -47,7 +49,33 @@ vía terminal física. Flujo:
    cliente escanea con su celular y ve su ticket ahí.
 5. `/receipt/:id` (`routes/receipt.js`) consulta la order directo en
    Mercado Pago y renderiza un ticket HTML con folio, artículos, fecha y
-   total.
+   total. El monto se formatea con `Intl.NumberFormat` usando
+   `currency`/`locale` de `data/business.json`. Si el pedido incluyó propina
+   (ver abajo), aparece como una línea aparte en el ticket.
+
+Antes de "Pagar con tarjeta", el usuario puede elegir una propina opcional
+(0/10/15/20% sobre el subtotal) — se suma al `amount` que se manda a
+Mercado Pago, y se agrega como línea extra al final del `description` de la
+order (`+ Propina 15% ($19.50)`), separada por coma igual que los artículos
+del carrito — así `routes/receipt.js` la muestra automáticamente sin lógica
+extra (ese archivo solo separa `description` por comas).
+
+### 2.3 Panel de administración (`/admin`)
+
+Protegido con HTTP Basic Auth (`middleware/adminAuth.js`, usuario/password
+via `ADMIN_USER`/`ADMIN_PASSWORD`). Muestra:
+- **Reporte de ventas de hoy** (`GET /admin/api/sales-today`): llama a
+  `mpClient.searchOrders({ beginDate, endDate })` (nuevo en
+  `lib/mercadopago.js`, mismo patrón mock/real que el resto del cliente) con
+  el rango de "hoy" en la zona horaria del servidor, filtra `status ===
+  'processed'`, y devuelve total + cantidad + lista de orders.
+- **Configuración actual, SOLO LECTURA** de `data/business.json` y
+  `data/menu.json`. A propósito NO tiene edición/guardado desde la UI: en
+  Vercel serverless el filesystem es de solo lectura en producción, así que
+  un botón "Guardar" ahí se vería como que funciona pero fallaría
+  silenciosamente (o solo funcionaría en local) — se decidió no construir
+  ese falso positivo. Para editar, sigue siendo: modificar los JSON en el
+  repo y hacer commit.
 
 ## 3. Mapa de archivos
 
@@ -69,17 +97,32 @@ routes/receipt.js           GET /receipt/:id  ticket HTML público (sin auth —
 
 lib/mercadopago.js          Cliente de la Orders API. isConfigured() decide entre
                              API real y modo mock (mockCreateOrder/mockGetOrder/
-                             mockSimulateEvent). Todo el resto del código llama
-                             siempre a las mismas funciones exportadas sin saber
-                             en qué modo está.
+                             mockSimulateEvent/mockSearchOrders). Todo el resto del
+                             código llama siempre a las mismas funciones exportadas
+                             sin saber en qué modo está.
 
 store/pointOrders.js        Bitácora in-memory. Ver limitación crítica en §5.
 
-data/business.json          Nombre, logo (texto), sucursales, título del mensaje
-                             de WhatsApp. Fuente única de verdad para la marca.
+middleware/adminAuth.js     HTTP Basic Auth para /admin. Fail closed si no hay
+                             ADMIN_PASSWORD configurado (503, no queda abierto).
 
-data/menu.json              Categorías/productos con precio y variantes opcionales.
-                             Consumido por index.html Y point-demo.js (dos
+routes/admin.js             GET /admin              sirve admin.html
+                             GET /admin/api/sales-today  reporte de ventas de hoy
+
+admin.html + js/admin.js + css/components/admin.css
+                             Panel de administración. Mismo patrón fetch-JSON que
+                             point-demo.html/js/point-demo.js.
+
+data/business.json          Nombre, logo (texto), sucursales, título del mensaje
+                             de WhatsApp, currency/locale (formato de moneda vía
+                             Intl.NumberFormat — NO es traducción de textos, solo
+                             cómo se muestran los números). Fuente única de verdad
+                             para la marca.
+
+data/menu.json              Categorías/productos con precio, variantes opcionales,
+                             y "available" (boolean — false = "Agotado", no se
+                             puede agregar al carrito; default true si falta el
+                             campo). Consumido por index.html Y point-demo.js (dos
                              renderizadores independientes, mismo JSON).
 
 index.html                  Sitio de WhatsApp. Script inline (no usa js/point-demo.js
@@ -156,8 +199,25 @@ texto — regenerarlos si se cambia de marca.
   ese ticket. Aceptable para el alcance actual (solo muestra
   artículos/monto/fecha, sin datos personales del cliente).
 
-- **Todo el texto asume español y pesos mexicanos (MXN)** — no hay
-  i18n ni multi-moneda.
+- **Moneda configurable, idioma NO.** `data/business.json` tiene
+  `currency`/`locale` que controlan el formato de números vía
+  `Intl.NumberFormat` (símbolo, separadores, decimales) en `index.html`,
+  `js/point-demo.js` y `routes/receipt.js` — pero todos los textos de la
+  interfaz (labels, botones, mensajes) siguen fijos en español. Traducir la
+  interfaz a otro idioma es un proyecto aparte, no intentado todavía.
+
+- **El panel `/admin` es de solo lectura para configuración** — a propósito
+  no tiene edición/guardado (ver §2.3, es una limitación real del
+  filesystem read-only de Vercel serverless, no un descuido). El reporte de
+  ventas solo cubre "hoy" en la zona horaria del servidor — no hay
+  selección de rango de fechas ni reportes históricos.
+
+- **Los nombres de las variables CSS cambiaron** en el rediseño a tema
+  blanco: ya NO existen `--bg-dark-pure/panel/card` ni `--border-color` —
+  ahora son `--color-bg`, `--color-surface`, `--color-surface-2`,
+  `--color-border`, más `--radius-sm/md` y `--shadow-sm/md` nuevos. Si ves
+  código o memoria de una sesión anterior a esto que use los nombres viejos,
+  está desactualizado — usa los nuevos.
 
 ## 6. Hosting: Vercel Y GitHub Pages están AMBOS activos
 
@@ -189,6 +249,10 @@ terminales de la cuenta real, hay que emparejar cada una explícitamente).
 `.env` está en `.gitignore` y NO está trackeado en git — no lo agregues de
 vuelta al repo.
 
+`ADMIN_USER`/`ADMIN_PASSWORD` protegen `/admin` (Basic Auth, fail-closed:
+sin `ADMIN_PASSWORD` el panel responde 503). `ADMIN_USER` sí tiene default
+(`"admin"`) porque no es secreto — lo que protege el acceso es la password.
+
 ## 8. Estado de pruebas
 
 No hay pruebas automatizadas (unit/integration). Todo lo validado en esta
@@ -215,6 +279,16 @@ fácilmente) y la validación de firma de webhook.
    contenido de ejemplo hasta que se vuelva a personalizar con datos
    reales en `data/business.json`/`data/menu.json`.
 7. README.md + este archivo.
+8. Tres agentes en paralelo (git worktrees aislados, fusionados sin
+   conflictos reales — el único archivo tocado por dos agentes a la vez,
+   `routes/receipt.js`, se auto-mergeó limpio porque cada uno tocó una
+   región distinta): rediseño visual completo a Swiss minimalista blanco,
+   inventario/moneda-locale/propina, y panel de administración con reporte
+   de ventas. Nota para la próxima vez que se orquesten agentes así: la
+   primera corrida se interrumpió por un cierre del proceso de Claude Code
+   con cero progreso rescatable (los tres apenas habían empezado) — la
+   segunda corrida sí incluyó instrucción explícita de commitear seguido
+   por sub-tarea, que evitó perder trabajo de nuevo.
 
 ## 10. Pendientes conocidos (no bloqueantes, pero sin resolver)
 
@@ -228,3 +302,10 @@ fácilmente) y la validación de firma de webhook.
   se decida la marca definitiva, o crear un repo aparte por cliente (se
   discutió usar "Use this template" de GitHub para eso).
 - Sin tests automatizados (§8).
+- El panel `/admin` no tiene edición de configuración (§5) — si en algún
+  momento se justifica (varios negocios usando esto, no solo uno), esa es
+  la señal de que ya conviene la migración a base de datos real + admin
+  editable, no antes (decisión explícita del dueño de posponer esa
+  migración grande por ahora).
+- Traducción de la interfaz a otro idioma (§5) — solo el formato de
+  moneda/número es configurable hoy, no el texto.
